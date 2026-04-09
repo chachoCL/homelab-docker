@@ -1,0 +1,16 @@
+http:
+  routers:
+    homarr:
+      rule: "Host(`homarr.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-homarr@file
+      service: homarr
+  services:
+    homarr:
+      loadBalancer:
+        servers:
+          - url: "http://homarr:7575"

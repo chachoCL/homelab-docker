@@ -1,0 +1,21 @@
+services:
+  homebox:
+    image: ghcr.io/sysadminsmedia/homebox:latest
+    container_name: homebox
+    restart: always
+    environment:
+       - HBOX_LOG_LEVEL=info
+       - HBOX_LOG_FORMAT=text
+       - HBOX_WEB_MAX_FILE_UPLOAD=10
+       - HBOX_OPTIONS_ALLOW_ANALYTICS=true
+    volumes:
+       - ./homebox-data:/data/
+    networks:
+       - proxy
+    labels:
+       - sablier.enable=true
+       - sablier.group=homebox
+
+networks:
+  proxy:
+    external: true

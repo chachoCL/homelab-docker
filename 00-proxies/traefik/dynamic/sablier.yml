@@ -1,0 +1,122 @@
+http:
+  middlewares:
+    sablier-wait:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          names: whoami
+          sessionDuration: 15m
+          dynamic:
+            displayName: "Whoami"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-media:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: media
+          sessionDuration: 10m
+          dynamic:
+            displayName: "media-apps"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-ia:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: ia
+          sessionDuration: 10m
+          dynamic:
+            displayName: "ia-apps"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-suwayomi:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: suwayomi
+          sessionDuration: 10m
+          dynamic:
+            displayName: "suwayomi"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-snapp:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: snapp
+          sessionDuration: 10m
+          dynamic:
+            displayName: "Url-Shortener"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-homebox:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: homebox
+          sessionDuration: 10m
+          dynamic:
+            displayName: "Homebox"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-pocket-id:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: pocket-id
+          sessionDuration: 10m
+          dynamic:
+            displayName: "Pocket-ID"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-homepage:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: homepage
+          sessionDuration: 10m
+          dynamic:
+            displayName: "Homepage"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-homarr:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: homarr
+          sessionDuration: 10m
+          dynamic:
+            displayName: "Homarr"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-firefox:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: firefox
+          sessionDuration: 10m
+          dynamic:
+            displayName: "Firefox"
+            theme: ghost
+            refreshFrequency: 5s
+
+    sablier-sparkyfitness:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: sparkyfitness
+          sessionDuration: 10m
+          dynamic:
+            displayName: "SparkyFitness"
+            theme: ghost
+            refreshFrequency: 5s

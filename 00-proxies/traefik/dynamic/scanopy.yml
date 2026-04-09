@@ -1,0 +1,14 @@
+http:
+  routers:
+    scanopy-router:
+      rule: "host(`scanopy.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: scanopy
+  services:
+    scanopy:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.6:60072"

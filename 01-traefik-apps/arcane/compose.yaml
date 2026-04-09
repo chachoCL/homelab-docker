@@ -1,0 +1,39 @@
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/arcane:latest
+    container_name: arcane
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.arcane.entrypoints=http"
+      - "traefik.http.routers.arcane.rule=Host(`arcane.local.joseluna.dev`)"
+      - "traefik.http.middlewares.arcane-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.arcane.middlewares=arcane-https-redirect"
+      - "traefik.http.routers.arcane-secure.entrypoints=https"
+      - "traefik.http.routers.arcane-secure.rule=Host(`arcane.local.joseluna.dev`)"
+      - "traefik.http.routers.arcane-secure.tls=true"
+      - "traefik.http.routers.arcane-secure.tls.certresolver=cloudflare"
+      - "traefik.http.services.arcane.loadbalancer.server.port=3552"
+      - "traefik.http.services.arcane.loadbalancer.server.scheme=http"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+    environment:
+      - APP_URL=https://arcane.local.joseluna.dev
+      - PUID=1000
+      - PGID=1000
+      - ENCRYPTION_KEY=7f121a4fc007541d67640fb583be4499d8bcd90814c27fc023d3248e91836278
+      - JWT_SECRET=a9748deea378c0faf0f37a336c248bdfa942386a7736e39aaf93aa1af4d7fe9b
+      - LOG_LEVEL=info
+      - LOG_JSON=false
+      - DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate
+
+volumes:
+  arcane-data:
+    driver: local
+
+networks:
+  proxy:
+    external: true

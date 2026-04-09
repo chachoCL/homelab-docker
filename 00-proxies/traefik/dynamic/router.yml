@@ -1,0 +1,14 @@
+http:
+  routers:
+    home-router:
+      rule: "host(`router.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: router
+  services:
+    router:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.1"

@@ -1,0 +1,14 @@
+http:
+  routers:
+    wireguard:
+      rule: "host(`wg.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: wireguard
+  services:
+    wireguard:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.7:10086"

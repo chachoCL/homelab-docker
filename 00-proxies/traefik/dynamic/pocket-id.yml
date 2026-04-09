@@ -1,0 +1,16 @@
+http:
+  routers:
+    pocket-id:
+      rule: "Host(`pocket-id.joseluna.dev`)"   # cambia dominio
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+#      middlewares:
+#        - sablier-pocket-id@file
+      service: pocket-id
+  services:
+    pocket-id:
+      loadBalancer:
+        servers:
+          - url: "http://pocket-id:1411"

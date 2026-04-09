@@ -1,0 +1,16 @@
+http:
+  routers:
+    firefox:
+      rule: "Host(`firefox.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-firefox@file
+      service: firefox
+  services:
+    firefox:
+      loadBalancer:
+        servers:
+          - url: "http://firefox:3000"

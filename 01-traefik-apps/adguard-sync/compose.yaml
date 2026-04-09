@@ -1,0 +1,19 @@
+services:
+  adguardhome-sync:
+    image: ghcr.io/bakito/adguardhome-sync
+    container_name: adguardhome-sync
+    command: run --config /config/adguardhome-sync.yaml
+    networks:
+      - proxy
+    volumes:
+      - ./config/adguardhome-sync.yaml:/config/adguardhome-sync.yaml
+    environment:
+      TZ: America/Santiago
+      LOG_LEVEL: info
+#    ports:
+#      - 8080:8080
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,16 @@
+http:
+  routers:
+    snapp:
+      rule: "Host(`url.joseluna.dev`)"
+      entryPoints: 
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-snapp@file
+      service: snapp
+  services:
+    snapp:
+      loadBalancer:
+        servers:
+          - url: "http://snapp:3000"

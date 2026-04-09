@@ -1,0 +1,14 @@
+http:
+  routers:
+    evolution-api:
+      rule: "host(`evolution.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: evolution-api
+  services:
+    evolution-api:
+      loadBalancer:
+        servers:
+          - url: "http://evolution_api:8080"

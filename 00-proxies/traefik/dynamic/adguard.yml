@@ -1,0 +1,14 @@
+http:
+  routers:
+    adguard-router:
+      rule: "host(`adguard.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: adguard-home
+  services:
+    adguard-home:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.4/"

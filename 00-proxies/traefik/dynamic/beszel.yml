@@ -1,0 +1,14 @@
+http:
+  routers:
+    beszel-router:
+      rule: "host(`beszel.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: beszel
+  services:
+    beszel:
+      loadBalancer:
+        servers:
+          - url: "http://beszel:8090"

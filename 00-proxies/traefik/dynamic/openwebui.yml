@@ -1,0 +1,44 @@
+http:
+  routers:
+    openwebui:
+      rule: "Host(`openwebui.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+#      middlewares:
+#        - sablier-ia@file
+      service: openwebui
+
+    litellm:
+      rule: "Host(`litellm.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+#      middlewares:
+#        - sablier-ia@file
+      service: litellm-litellm-1
+
+
+  services:
+    openwebui:
+      loadBalancer:
+        servers:
+          - url: "http://openwebui:8080"
+
+    litellm-litellm-1:
+      loadBalancer:
+        servers:
+          - url: "http://litellm:4000"
+
+
+
+  middlewares:
+    openwebui-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+
+
+

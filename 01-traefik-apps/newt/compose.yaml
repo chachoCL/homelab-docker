@@ -1,0 +1,19 @@
+services:
+  newt:
+    image: fosrl/newt:latest
+    container_name: newt
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DOCKER_SOCKET=unix:///var/run/docker.sock
+#      - DOCKER_ENFORCE_NETWORK_VALIDATION=true
+      - PANGOLIN_ENDPOINT=https://pangolin.joseluna.dev
+      - NEWT_ID=4jfywef83ugw2z5
+      - NEWT_SECRET=w3kj36si0b0raw41557qp1k4q7nfx1ektygj5oswijgxwc75
+    networks:
+      - newt
+
+networks:
+  newt:
+    name: newt

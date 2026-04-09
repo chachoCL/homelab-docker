@@ -1,0 +1,16 @@
+http:  
+  routers:
+    suwayomi:
+      rule: "Host(`suwayomi.joseluna.dev`)"   # cambia dominio
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare 
+      middlewares:
+        - sablier-suwayomi@file
+      service: suwayomi
+  services:
+    suwayomi:
+      loadBalancer:
+        servers:
+          - url: "http://suwayomi:4567"

@@ -1,0 +1,61 @@
+services:
+  shlink_db:
+    image: mariadb:11
+    container_name: shlink_mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: change_this_root_password
+      MYSQL_DATABASE: shlink
+      MYSQL_USER: shlink
+      MYSQL_PASSWORD: change_this_shlink_password
+    volumes:
+      - shlink_db_data:/var/lib/mysql
+    networks:
+      - shlink
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  shlink:
+    image: shlinkio/shlink:stable
+    container_name: shlink
+    restart: unless-stopped
+    environment:
+      DEFAULT_DOMAIN: chacho.link
+      IS_HTTPS_ENABLED: "true"
+      GEOLITE_LICENSE_KEY: ${GEOLITE_LICENSE_KEY}
+      DB_DRIVER: maria
+      DB_NAME: shlink
+      DB_USER: shlink
+      DB_PASSWORD: change_this_shlink_password
+      DB_HOST: shlink_db
+      DB_PORT: 3306
+      SHORT_DOMAIN_SCHEMA: https
+      SHORT_DOMAIN_HOST: chacho.link
+      TIMEZONE: America/Santiago
+      SHELL_VERBOSITY: 3
+    depends_on:
+      shlink_db:
+        condition: service_healthy
+    networks:
+      - newt
+      - shlink
+
+  shlink_web:
+    image: shlinkio/shlink-web-client:stable
+    container_name: shlink_web_client
+    restart: unless-stopped
+    networks:
+      - shlink
+      - newt
+
+networks:
+  newt:
+    external: true
+  shlink:
+    name: shlink
+
+volumes:
+  shlink_db_data:

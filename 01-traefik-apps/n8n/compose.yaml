@@ -1,0 +1,50 @@
+services:
+  n8n:
+    image: n8nio/n8n:1.123.30
+    container_name: n8n
+    restart: always
+    networks:
+      - proxy
+      - n8n
+    dns:
+      - 10.0.0.4
+      - 10.0.0.16
+    environment:
+      - N8N_HOST=n8n.joseluna.dev
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://n8n.joseluna.dev/
+      - GENERIC_TIMEZONE=America/Santiago
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_RUNNERS_ENABLED=true
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./local-files:/files
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${N8N_DB_PASSWORD}
+      POSTGRES_USER: n8nuser
+      POSTGRES_DB: n8n-ia
+    networks:
+      - n8n
+
+
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - proxy
+      - n8n
+
+volumes:
+  n8n_data:
+
+networks:
+  n8n:
+    name: n8n
+  proxy:
+    external: true

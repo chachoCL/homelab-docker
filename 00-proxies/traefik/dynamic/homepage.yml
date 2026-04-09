@@ -1,0 +1,16 @@
+http:
+  routers:
+    homepage:
+      rule: "Host(`homepage.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-homepage@file
+      service: homepage
+  services:
+    homepage:
+      loadBalancer:
+        servers:
+          - url: "http://homepage:3000"

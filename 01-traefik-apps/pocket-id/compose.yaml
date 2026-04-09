@@ -1,0 +1,22 @@
+services:
+  pocket-id:
+    image: ghcr.io/pocket-id/pocket-id:v2.5.0
+    restart: unless-stopped
+    container_name: pocker-id
+    env_file: .env
+#    security_opt:
+#      - no-new-privileges=true
+#    cap_drop:
+#      - ALL
+  #  ports:
+  #    - 1411:1411
+    volumes:
+      - "./data:/app/data"
+    networks:
+      - proxy
+#    labels:
+#      - sablier.enable=true
+#      - sablier.group=pocket-id
+networks:
+  proxy:
+    external: true

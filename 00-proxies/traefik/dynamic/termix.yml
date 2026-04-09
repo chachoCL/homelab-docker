@@ -1,0 +1,14 @@
+http:
+  routers:
+    termix:
+      rule: "host(`termix.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: termix
+  services:
+    termix:
+      loadBalancer:
+        servers:
+          - url: "http://termix:8080"

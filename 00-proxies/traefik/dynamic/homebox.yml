@@ -1,0 +1,16 @@
+http:  
+  routers:
+    homebox:
+      rule: "Host(`homebox.local.joseluna.dev`)"   # cambia dominio
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare 
+      middlewares:
+        - sablier-homebox@file
+      service: homebox
+  services:
+    homebox:
+      loadBalancer:
+        servers:
+          - url: "http://homebox:7745"

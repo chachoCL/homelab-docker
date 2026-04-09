@@ -1,0 +1,19 @@
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./homarr/appdata:/appdata
+    environment:
+      - SECRET_ENCRYPTION_KEY=fbb516ecf7ac05d866ccf5d9f4e5cb417447935f625f62766e3eafc1084c62be
+    networks:
+      - proxy
+    labels:
+      - sablier.enable=true
+      - sablier.group=homarr
+
+networks:
+  proxy:
+    external: true

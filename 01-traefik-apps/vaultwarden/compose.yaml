@@ -1,0 +1,36 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.35.2
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      DOMAIN: "https://vault.joseluna.dev"
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURITY: ${SMTP_SECURITY}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SSO_ENABLED: "True"
+      SSO_AUTHORITY: ${SSO_AUTHORITY}
+      SSO_CLIENT_ID: ${SSO_CLIENT_ID}
+      SSO_CLIENT_SECRET: ${SSO_CLIENT_SECRET}
+    volumes:
+      - /config/vw-data/:/data/
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vault.entrypoints=https"
+      - "traefik.http.routers.vault.rule=Host(`vault.joseluna.dev`)"
+      - "traefik.http.routers.vault.tls=true"
+      - "traefik.http.routers.vault.tls.certresolver=cloudflare"
+      - "traefik.http.routers.vault.service=vault"
+      - "traefik.http.services.vault.loadbalancer.server.port=80"
+      - "traefik.http.services.vault.loadbalancer.server.scheme=http"
+      - "traefik.http.middlewares.vault-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.vault.middlewares=vault-headers"
+
+networks:
+  proxy:
+      external: true

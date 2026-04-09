@@ -1,0 +1,47 @@
+http:
+  routers:
+    nextcloudd-router:
+      rule: "Host(`drive.joseluna.dev`)"
+      entrypoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: nextcloudd
+      middlewares:
+        - nextcloud-chain
+
+    nextcloudd-aio-router:
+      rule: "Host(`drive-aio.joseluna.dev`)"
+      entrypoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: nextcloudd-aio
+
+  services:
+    nextcloudd:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.18:11081"
+
+    nextcloudd-aio:
+      loadBalancer:
+        servers:
+          - url: "https://10.0.0.18:8080"
+
+  middlewares:
+    nextcloud-secure-headers:
+      headers:
+        hostsProxyHeaders:
+          - "X-Forwarded-Host"
+        referrerPolicy: "same-origin"
+
+    https-redirect:
+      redirectscheme:
+        scheme: https
+
+    nextcloud-chain:
+      chain:
+        middlewares:
+          - https-redirect
+          - nextcloud-secure-headers

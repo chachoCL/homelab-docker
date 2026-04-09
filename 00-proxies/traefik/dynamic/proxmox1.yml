@@ -1,0 +1,14 @@
+http:
+  routers:
+    prox1-router:
+      rule: "host(`proxmox1.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: prox1
+  services:
+    prox1:
+      loadBalancer:
+        servers:
+          - url: "https://10.0.0.2:8006"

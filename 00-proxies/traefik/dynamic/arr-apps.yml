@@ -1,0 +1,107 @@
+http:
+  routers:
+    qbittorrent-router:
+      rule: "host(`qbittorrent.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-media@file
+      service: qbittorrent
+    
+    radarr-router:
+      rule: "host(`radarr.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-media@file
+      service: radarr
+  
+    sonarr-router:
+      rule: "host(`sonarr.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-media@file
+      service: sonarr
+    
+    flaresolverr-router:
+      rule: "host(`flaresolverr.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-media@file
+      service: flaresolverr 
+    
+    prowlarr-router:
+      rule: "host(`prowlarr.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-media@file
+      service: prowlarr
+
+    rdtclient-router:
+      rule: "host(`rdtclient.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-media@file
+      service: rdtclient
+    
+    jellyseerr-router:
+      rule: "host(`jellyseerr.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-media@file
+      service: jellyseerr 
+
+
+
+#  ------------------------------------
+
+
+
+  services:
+    qbittorrent:
+      loadBalancer:
+        servers:
+          - url: "http://qbittorrent:8080"
+    radarr:
+      loadBalancer:
+        servers:
+          - url: "http://radarr:7878"
+    sonarr:
+      loadBalancer:
+        servers:
+          - url: "http://sonarr:8989"
+    flaresolverr:
+      loadBalancer:
+        servers:
+          - url: "http://flaresolverr:8191"
+    prowlarr:
+      loadBalancer:
+        servers:
+          - url: "http://prowlarr:9696"
+    rdtclient:
+      loadBalancer:
+        servers:
+          - url: "http://rdtclient:6500"
+    jellyseerr:
+      loadBalancer:
+        servers:
+          - url: "http://jellyseerr:5055"

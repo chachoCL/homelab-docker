@@ -1,0 +1,16 @@
+http:
+  routers:
+    uptimekuma:
+      rule: "Host(`uptimekuma.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: uptimekuma
+
+  services:
+    uptimekuma:
+      loadBalancer:
+        servers:
+          - url: "http://uptimekuma:3001"
+

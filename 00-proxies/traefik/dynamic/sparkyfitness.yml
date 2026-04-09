@@ -1,0 +1,17 @@
+http:
+  routers:
+    sparkyfitness:
+      rule: "Host(`sparky.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-sparkyfitness@file
+      service: sparkyfitness
+
+  services:
+    sparkyfitness:
+      loadBalancer:
+        servers:
+          - url: "http://sparkyfitness-frontend:80"

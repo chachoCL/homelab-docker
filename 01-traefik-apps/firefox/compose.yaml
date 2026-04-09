@@ -1,0 +1,21 @@
+services:
+  firefox:
+    image: lscr.io/linuxserver/firefox:latest
+    container_name: firefox
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Santiago
+    volumes:
+      - ./config:/config
+    shm_size: "1gb"
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - sablier.enable=true
+      - sablier.group=firefox
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,23 @@
+services:
+  discopanel:
+    image: nickheyer/discopanel:latest
+    container_name: discopanel
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - "8080:8080"         # DiscoPanel web interface
+      - "25565:25565"       # Minecraft puerto principal
+      - "25566-25670:25566-25670/tcp"  # Puertos adicionales para más servidores
+      - "25566-25670:25566-25670/udp"  # UDP para Minecraft
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/docker_stacks/discopanel/app/data:/app/data
+      - /root/docker_stacks/discopanel/backups:/app/backups
+      - /root/docker_stacks/discopanel/tmp:/app/tmp
+    environment:
+      - DISCOPANEL_DATA_DIR=/app/data
+      - DISCOPANEL_HOST_DATA_PATH=/root/docker_stacks/discopanel/app/data
+      - TZ=America/Santiago
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+

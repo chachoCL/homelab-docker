@@ -1,0 +1,14 @@
+http:
+  routers:
+    jellyfin-router:
+      rule: "host(`jellyfin.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: jellyfin
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.22:8096"

@@ -1,0 +1,14 @@
+http:
+  routers:
+    prox3-router:
+      rule: "host(`proxmox3.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: prox3
+  services:
+    prox3:
+      loadBalancer:
+        servers:
+          - url: "https://10.0.0.8:8006"

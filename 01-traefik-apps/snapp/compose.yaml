@@ -1,0 +1,21 @@
+services:
+  snapp:
+    image: uraniadev/snapp:latest
+    container_name: snapp
+    networks:
+      - proxy
+    environment:
+      ORIGIN: https://url.joseluna.dev
+      PUBLIC_URL: https://url.joseluna.dev
+      DATABASE_PROVIDER: sqlite
+      DATABASE_URL: file:./db.sqlite
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: ${SNAPP_ADMIN_PASSWORD}
+      TOKEN_SECRET: ${SNAPP_TOKEN_SECRET}
+    labels:
+      - sablier.enable=true
+      - sablier.group=snapp
+
+networks:
+  proxy:
+    external: true

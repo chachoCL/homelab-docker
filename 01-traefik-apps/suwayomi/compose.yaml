@@ -1,0 +1,21 @@
+services:
+  suwayomi:
+    image: ghcr.io/suwayomi/suwayomi-server:v2.1.2087
+    container_name: suwayomi
+    user: 0:0
+    environment:
+      - TZ=America/Santiago
+      - FLARESOLVERR_ENABLED=true
+      - FLARESOLVERR_URL=https://flaresolverr.local.joseluna.dev/
+    volumes:
+      - ./data:/home/suwayomi/.local/share/Tachidesk
+    restart: on-failure
+    networks:
+      - proxy
+    labels:
+      - sablier.enable=true
+      - sablier.group=suwayomi
+
+networks:
+  proxy:
+    external: true

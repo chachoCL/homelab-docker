@@ -1,0 +1,23 @@
+http:  
+  routers:
+    whoami:
+      rule: "Host(`whoami.local.joseluna.dev`)"   # cambia dominio
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare 
+      middlewares:
+        - sablier-wait@file
+      service: whoami  
+  services:
+    whoami:
+      loadBalancer:
+        servers:
+          - url: "http://whoami:80"
+
+
+  
+
+
+
+  

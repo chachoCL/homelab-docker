@@ -1,0 +1,29 @@
+http:
+  routers:
+    crafty-router:
+      rule: "host(`crafty.local.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: crafty
+  services:
+    crafty:
+      loadBalancer:
+        servers:
+          - url: "https://10.0.0.6:8443"
+
+
+  middlewares:
+      my-sablier:
+          plugin:
+              sablier:
+                  dynamic:
+                      displayName: My Title
+                      refreshFrequency: 5s
+                      showDetails: "true"
+                      theme: hacker-terminal
+                  group: default
+                  names: whoami,nginx
+                  sablierUrl: http://sablier:10000
+                  sessionDuration: 1m

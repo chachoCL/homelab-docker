@@ -1,0 +1,14 @@
+http:
+  routers:
+    homeassistant-router:
+      rule: "host(`homeassistant.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: homeassistant
+  services:
+    homeassistant:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.149:8123"

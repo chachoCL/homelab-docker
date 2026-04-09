@@ -1,0 +1,71 @@
+services:
+
+  api:
+    container_name: evolution_api
+    image: evoapicloud/evolution-api:latest
+    restart: always
+    depends_on:
+      - redis
+      - postgres
+  #  ports:
+  #    - 8080:8080
+    volumes:
+      - ./evolution_instances:/evolution/instances
+    networks:
+      - evo
+      - proxy
+    env_file:
+      - .env
+  #  expose:
+  #    - 8080
+
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - evo
+      - n8n
+    container_name: redis_evolution_api
+    command: ["redis-server", "--port 6379", "--requirepass", "${REDIS_PASSWORD}", "--appendonly yes" ]
+
+#    command: >
+#      redis-server --port 6379 --requierepass ${REDIS_PASSWORD} --appendonly yes
+    volumes:
+      - ./evolution_redis:/data
+    env_file:
+      - .env
+   # ports:
+   #   - 6379:6379
+
+  postgres:
+    container_name: postgres_evolution
+    image: postgres:15
+    networks:
+      - evo
+    command: [
+      "postgres",
+      "-c", "max_connections=200",
+      "-c", "listen_addresses=*",
+      "-c", "shared_buffers=256MB",
+      "-c", "effective_cache_size=1GB",
+      "-c", "work_mem=4MB"
+    ]
+    restart: always
+   # ports:
+   #   - 5432:5432
+    environment:
+      - POSTGRES_USER=evouser
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=evolutiondb
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+    - ./postgres_data:/var/lib/postgresql/data
+
+
+networks:
+  evo:
+    external: true
+  proxy:
+    external: true
+  n8n:
+    external: true
