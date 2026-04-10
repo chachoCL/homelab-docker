@@ -1,4 +1,3 @@
-# Homelab — moon-stack
 
 Este repositorio contiene la configuración y los stacks Docker/Compose de mi homelab. Está organizado por carpetas por propósito (proxies, apps gestionadas por Traefik/Caddy, servicios compartidos, etc.).
 
