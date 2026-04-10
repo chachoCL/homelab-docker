@@ -1,32 +1,39 @@
-# 1. Ignorar todo por defecto
 *
-
-# 2. Permitir la estructura de carpetas y archivos básicos
-!.gitignore
-!README.md
-!LICENSE
 !*/
 
-# 3. Docker Compose (todas las variantes)
+# 3. EXCEPCIONES: Lo que SÍ queremos en el repo
+!.gitignore
+!README.md
 !**/compose.yml
 !**/compose.yaml
-!**/compose.*.yml
-!**/compose.*.yaml
 !**/docker-compose.yml
 !**/docker-compose.yaml
+!**/compose.*.yml
+!**/compose.*.yaml
+!**/Caddyfile
+!**/env.example
+!**/*.env.example
 
-# 4. Configuración de Proxies (Traefik y Caddy)
+!**/**/compose.yml
+!**/**/compose.yaml
+!**/**/docker-compose.yml
+!**/**/docker-compose.yaml
+!**/**/compose.*.yml
+!**/**/compose.*.yaml
+!**/**/Caddyfile
+!**/**/env.example
+!**/**/*.env.example
+# 4. Reglas específicas para Traefik
 !**/traefik/dynamic/
 !**/traefik/dynamic/*.yml
 !**/traefik/dynamic/*.yaml
 !**/traefik.yml
 !**/traefik.yaml
-!**/Caddyfile
 
-# 5. Templates de variables de entorno (NUNCA los .env reales)
-!**/env.example
-!**/*.env.example
-
-# 6. Scripts útiles
-!**/*.sh
-!**/Makefile
+# 5. BLOQUEO EXTRA (Por si acaso alguna carpeta se quiere pasar de lista)
+**/node_modules/
+**/dist/
+**/.next/
+**/.git/
+**/data/
+**/volumes/
