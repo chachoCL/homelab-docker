@@ -1,0 +1,65 @@
+services:
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline:latest
+    env_file: .env
+    networks:
+      - outline
+      - caddy
+#    expose:
+#      - "3000"
+    volumes:
+      - ./outline-data:/var/lib/outline/data
+    depends_on:
+      - postgres
+      - redis
+    labels:
+      - sablier.enable=true
+      - sablier.group=outline
+
+  redis:
+    image: redis
+    env_file: .env
+    networks:
+      - outline
+#    expose:
+#      - "6379"
+    volumes:
+      - ./redis.conf:/redis.conf
+    command: ["redis-server", "/redis.conf"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    labels:
+      - sablier.enable=true
+      - sablier.group=outline
+
+  postgres:
+    image: postgres:18
+    env_file: .env
+    networks:
+      - outline
+#    expose:
+#      - "5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "outline", "-U", "user"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    environment:
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'pass'
+      POSTGRES_DB: 'outline'
+    labels:
+      - sablier.enable=true
+      - sablier.group=outline
+
+
+networks:
+  outline:
+    name: outline
+  caddy:
+    external: true

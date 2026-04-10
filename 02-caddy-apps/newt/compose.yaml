@@ -1,0 +1,15 @@
+services:
+  newt:
+    image: fosrl/newt
+    container_name: newt
+    restart: unless-stopped
+    environment:
+      - PANGOLIN_ENDPOINT=https://pangolin.joseluna.dev
+      - NEWT_ID=9veuo58b1ozacb5
+      - NEWT_SECRET=2mc7tzpjdmy2zhorrpocg8m6k0ao31hue79wok15hi563mgc
+    networks:
+      - newt-alpine
+      
+networks:
+  newt-alpine:
+    name: newt-alpine

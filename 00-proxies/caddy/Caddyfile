@@ -1,0 +1,180 @@
+{
+	admin 0.0.0.0:2019
+}
+
+*.joseluna.dev {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+		propagation_delay 2m
+		resolvers 1.1.1.1
+	}
+
+	@caddy host caddy.joseluna.dev
+	handle @caddy {
+		root * /usr/share/caddy
+		file_server
+	}
+
+	@dispatcharr host dispatcharr.joseluna.dev
+	handle @dispatcharr {
+		route {
+			reverse_proxy dispatcharr:9191
+		}
+	}
+
+	@openclaw host openclaw.joseluna.dev
+	handle @openclaw {
+		reverse_proxy http://10.0.0.33:18789 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	@noco-db host notion.joseluna.dev
+	handle @noco-db {
+		route {
+			sablier http://sablier:10000 {
+				group noco-db
+				session_duration 10m
+				dynamic {
+					display_name NocoDB
+					show_details true
+					theme ghost
+					refresh_frequency 2s
+				}
+			}
+			reverse_proxy noco-db:8080
+		}
+	}
+
+	@kaneo host kaneo.joseluna.dev
+	handle @kaneo {
+		handle /api/* {
+			route {
+				sablier http://sablier:10000 {
+					group kaneo
+					session_duration 10m
+					dynamic {
+						display_name kaneo
+						show_details true
+						theme ghost
+						refresh_frequency 2s
+					}
+				}
+				reverse_proxy kaneo-api-1:1337
+			}
+		}
+		handle {
+			route {
+				sablier http://sablier:10000 {
+					group kaneo
+					session_duration 10m
+					dynamic {
+						display_name kaneo
+						show_details true
+						theme ghost
+						refresh_frequency 2s
+					}
+				}
+				reverse_proxy kaneo-web-1:5173
+			}
+		}
+	}
+
+	@affine host affine.joseluna.dev
+	handle @affine {
+		route {
+			sablier http://sablier:10000 {
+				group affine
+				session_duration 10m
+				dynamic {
+					display_name affine
+					show_details true
+					theme ghost
+					refresh_frequency 2s
+				}
+			}
+			reverse_proxy affine_server:3010
+		}
+	}
+
+	@outline host docs.joseluna.dev
+	handle @outline {
+		route {
+			sablier http://sablier:10000 {
+				group outline
+				session_duration 10m
+				dynamic {
+					display_name outline
+					show_details true
+					theme ghost
+					refresh_frequency 2s
+				}
+			}
+			reverse_proxy outline-outline-1:3000
+		}
+	}
+
+	@blinko host keep.joseluna.dev
+	handle @blinko {
+		route {
+			sablier http://sablier:10000 {
+				group keep
+				session_duration 10m
+				dynamic {
+					display_name keep
+					show_details true
+					theme ghost
+					refresh_frequency 2s
+				}
+			}
+			reverse_proxy blinko-website:1111
+		}
+	}
+
+	@actual host actual.joseluna.dev
+	handle @actual {
+		route {
+			sablier http://sablier:10000 {
+				group actual
+				session_duration 10m
+				dynamic {
+					display_name actual
+					show_details true
+					theme ghost
+					refresh_frequency 2s
+				}
+			}
+			reverse_proxy actual_server:5006
+		}
+	}
+
+	@listmonk host listmonk.joseluna.dev
+	handle @listmonk {
+		route {
+			sablier http://sablier:10000 {
+				group listmonk
+				session_duration 10m
+				dynamic {
+					display_name listmonk
+					show_details true
+					theme ghost
+					refresh_frequency 2s
+				}
+			}
+			reverse_proxy listmonk_app:9000
+		}
+	}
+	@bifrost host bifrost.joseluna.dev
+	handle @bifrost {
+		route {
+			reverse_proxy bifrost:8080
+		}
+	}
+	@infisical host infisical.joseluna.dev
+	handle @infisical {
+		route {
+			reverse_proxy infisical-backend:8080
+		}
+	}
+}

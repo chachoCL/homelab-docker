@@ -1,0 +1,50 @@
+services:
+    postgres:
+        image: postgres:16-alpine
+        env_file: .env
+        volumes:
+            - ./postgres_data:/var/lib/postgresql/data
+        restart: unless-stopped
+        networks:
+            - kaneo
+        labels:
+            - sablier.enable=true
+            - sablier.group=kaneo
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U kaneo -d kaneo" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    api:
+        image: ghcr.io/usekaneo/api:latest
+        env_file: .env
+        depends_on:
+            postgres:
+                condition: service_healthy
+        restart: unless-stopped
+        labels:
+            - sablier.enable=true
+            - sablier.group=kaneo
+        networks:
+            - kaneo
+            - caddy
+
+    web:
+        image: ghcr.io/usekaneo/web:latest
+        env_file: .env
+        depends_on:
+            - api
+        restart: unless-stopped
+        networks:
+            - kaneo
+            - caddy
+        labels:
+            - sablier.enable=true
+            - sablier.group=kaneo
+
+networks:
+    kaneo:
+        name: kaneo
+    caddy:
+        external: true

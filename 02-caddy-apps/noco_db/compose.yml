@@ -1,0 +1,45 @@
+services: 
+  nocodb: 
+    image: "nocodb/nocodb:latest"
+    container_name: noco-db
+    restart: always
+    volumes:
+      - "./nc_data:/usr/app/data"
+    depends_on: 
+      root_db: 
+        condition: service_healthy
+    labels:
+      - sablier.enable=true
+      - sablier.group=noco-db
+    environment: 
+      NC_DB: "pg://root_db:5432?u=postgres&p=password&d=root_db"
+    networks:
+      - nocodb
+      - caddy
+
+  root_db: 
+    image: postgres:16.6
+    restart: always
+    volumes:
+      - "./db_data:/var/lib/postgresql/data"
+    networks:
+      - nocodb
+      - caddy
+    labels:
+      - sablier.enable=true
+      - sablier.group=noco-db
+    environment: 
+      POSTGRES_DB: root_db
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+    healthcheck: 
+      interval: 10s
+      retries: 10
+      test: "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""
+      timeout: 2s
+
+networks:
+  nocodb:
+    name: nocodb
+  caddy:
+    external: true

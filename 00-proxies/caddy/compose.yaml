@@ -1,0 +1,53 @@
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: caddy
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - CLOUDFLARE_EMAIL=${CF_EMAIL}
+      - CLOUDFLARE_API_TOKEN=${CF_API_TOKEN}
+      - ACME_AGREE=true
+    ports:
+      - 2019:2019 # admin API
+      - 80:80
+      - 443:443
+    volumes:
+      - caddy-config:/config
+      - caddy-data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./index.html:/usr/share/caddy/index.html
+    networks:
+      - caddy
+
+  sablier:
+    image: sablierapp/sablier:1.11.0 # x-release-please-version
+    command:
+      - start
+      - --provider.name=docker
+    container_name: sablier
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    networks:
+      - caddy
+
+  whoami:
+    image: acouvreur/whoami:v1.10.2
+    container_name: whoami
+    labels:
+      - sablier.enable=true
+      - sablier.group=demo
+    networks:
+      - caddy
+
+volumes:
+  caddy-config:
+  caddy-data:
+
+
+networks:
+  caddy:
+    name: caddy

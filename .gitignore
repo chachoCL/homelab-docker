@@ -13,6 +13,7 @@
 !**/Caddyfile
 !**/env.example
 !**/*.env.example
+!**/dockerfile
 
 !**/**/compose.yml
 !**/**/compose.yaml

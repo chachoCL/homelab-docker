@@ -1,0 +1,19 @@
+services:
+  server:
+    image: docker.io/actualbudget/actual-server:latest
+    container_name: actual_server
+    labels:
+      - sablier.enable=true
+      - sablier.group=actual
+    volumes:
+      - ./actual-data:/data
+    restart: unless-stopped
+    networks:
+      - caddy
+      - actual
+
+networks:
+  actual:
+    name: actual
+  caddy:
+    external: true
