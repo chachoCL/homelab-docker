@@ -30,7 +30,15 @@
 		}
 	}
 
-	@noco-db host notion.joseluna.dev
+	@hermes host hermes.joseluna.dev
+	handle @hermes {
+		reverse_proxy http://10.0.0.32:3001 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	@noco-db host nocodb.joseluna.dev
 	handle @noco-db {
 		route {
 			sablier http://sablier:10000 {
@@ -98,7 +106,7 @@
 		}
 	}
 
-	@outline host docs.joseluna.dev
+	@outline host outline.joseluna.dev
 	handle @outline {
 		route {
 			sablier http://sablier:10000 {
@@ -175,6 +183,39 @@
 	handle @infisical {
 		route {
 			reverse_proxy infisical-backend:8080
+		}
+	}
+	@litellm host llm.joseluna.dev
+	handle @litellm {
+		route {
+			reverse_proxy litellm:4000
+		}
+	}
+	@excalidraw host excalidraw.joseluna.dev
+	handle @excalidraw {
+		handle /socket.io* {
+			reverse_proxy excalidraw-room:80
+		}
+		handle {
+			reverse_proxy excalidraw:80
+		}
+	}
+	@excalidash host excalidash.joseluna.dev
+	handle @excalidash {
+		route {
+			reverse_proxy excalidash-frontend:80
+		}
+	}
+	@multica host multica.joseluna.dev
+	handle @multica {
+		route {
+			reverse_proxy multica-frontend-1:3000
+		}
+	}
+	@multica-api host multica-api.joseluna.dev
+	handle @multica-api {
+		route {
+			reverse_proxy multica-backend-1:8080
 		}
 	}
 }

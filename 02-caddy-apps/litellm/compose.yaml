@@ -1,0 +1,75 @@
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:v1.83.10-stable
+    container_name: litellm
+    restart: unless-stopped
+    dns:
+      - 10.0.0.4
+      - 10.0.0.16
+    environment:
+      DATABASE_URL: "postgresql://llmproxy:dbpassword9090@db:5432/litellm"
+      STORE_MODEL_IN_DB: "True"
+      TZ: "America/Santiago"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./config.yaml:/app/config.yaml
+      - ./github_copilot:/root/.config/litellm/github_copilot
+    command:
+      - "--config=/app/config.yaml"
+    healthcheck:
+      test: [ "CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness')\" || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - caddy
+      - litellm
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    container_name: litellm_db
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: llmproxy
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./postgres_data-litellm:/var/lib/postgresql/data
+    networks:
+      - litellm
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d litellm -U llmproxy" ]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: litellm-prometheus
+    networks:
+      - litellm
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${MY_REDIS_PASSWORD}
+    networks:
+      - litellm
+
+networks:
+  caddy:
+    external: true
+  litellm:
+    name: litellm

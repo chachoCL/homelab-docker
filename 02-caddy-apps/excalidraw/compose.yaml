@@ -1,0 +1,61 @@
+services:
+  backend:
+    image: zimengxiong/excalidash-backend:latest
+    container_name: excalidash-backend
+    environment:
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - PORT=8000
+      - NODE_ENV=production
+      - AUTH_MODE=${AUTH_MODE:-local}
+      - JWT_SECRET=${JWT_SECRET:-77aacd16b39d29e9851850e5af76deca34a02e446c98ab33a91ae4b498ce7adb}
+      - CSRF_SECRET=${CSRF_SECRET:-KU53eR0Xvydr/wnF4HinT8tK/IfrVBCK4Ya3fFLByIs=}
+#      - ENFORCE_HTTPS_REDIRECT=false
+      - TRUST_PROXY=true
+      - FRONTEND_URL=https://excalidash.joseluna.dev
+    volumes:
+      - ./backend-data:/app/prisma
+    networks:
+      - excalidash
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:8000/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    image: zimengxiong/excalidash-frontend:latest
+    container_name: excalidash-frontend
+    depends_on:
+      - backend
+    networks:
+      - excalidash
+      - caddy
+    environment:
+      - BACKEND_URL=excalidash-backend:8000
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:80",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  excalidash:
+    name: excalidash
+  caddy:
+    external: true
