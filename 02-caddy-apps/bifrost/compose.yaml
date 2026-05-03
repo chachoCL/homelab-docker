@@ -1,6 +1,6 @@
 services:
   bifrost:
-    image: maximhq/bifrost:v1.4.17
+    image: maximhq/bifrost:v1.5.0-prerelease7
     container_name: bifrost
     volumes:
       - ./data:/app/data
