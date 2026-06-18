@@ -32,7 +32,7 @@
 
 	@hermes host hermes.joseluna.dev
 	handle @hermes {
-		reverse_proxy http://10.0.0.32:3001 {
+		reverse_proxy http://10.0.0.32:8787 {
 			header_up Host {host}
 			header_up X-Real-IP {remote_host}
 		}
@@ -125,19 +125,7 @@
 
 	@blinko host keep.joseluna.dev
 	handle @blinko {
-		route {
-			sablier http://sablier:10000 {
-				group keep
-				session_duration 10m
-				dynamic {
-					display_name keep
-					show_details true
-					theme ghost
-					refresh_frequency 2s
-				}
-			}
-			reverse_proxy blinko-website:1111
-		}
+		reverse_proxy blinko-website:1111
 	}
 
 	@actual host actual.joseluna.dev
@@ -188,7 +176,10 @@
 	@litellm host llm.joseluna.dev
 	handle @litellm {
 		route {
-			reverse_proxy litellm:4000
+			reverse_proxy litellm:4000 {
+				header_up X-Real-IP {remote_host}
+				header_up X-Forwarded-For {remote_host}
+			}
 		}
 	}
 	@excalidraw host excalidraw.joseluna.dev
@@ -216,6 +207,12 @@
 	handle @multica-api {
 		route {
 			reverse_proxy multica-backend-1:8080
+		}
+	}
+	@nodecast-tv host tv.joseluna.dev
+	handle @nodecast-tv {
+		route {
+			reverse_proxy nodecast-tv:3000
 		}
 	}
 }

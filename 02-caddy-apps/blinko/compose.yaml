@@ -16,9 +16,9 @@ services:
         condition: service_healthy
     volumes:
       - ./.blinko:/app/.blinko 
-    labels:
-      - sablier.enable=true
-      - sablier.group=keep
+#    labels:
+#      - sablier.enable=true
+#      - sablier.group=keep
     restart: always
     logging:
       options:
@@ -40,9 +40,9 @@ services:
     image: postgres:14
     container_name: blinko-postgres
     restart: always
-    labels:
-      - sablier.enable=true
-      - sablier.group=keep
+#    labels:
+#      - sablier.enable=true
+#      - sablier.group=keep
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
