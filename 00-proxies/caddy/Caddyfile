@@ -178,7 +178,6 @@
 		route {
 			reverse_proxy litellm:4000 {
 				header_up X-Real-IP {remote_host}
-				header_up X-Forwarded-For {remote_host}
 			}
 		}
 	}
@@ -213,6 +212,41 @@
 	handle @nodecast-tv {
 		route {
 			reverse_proxy nodecast-tv:3000
+		}
+	}
+
+	@cliproxyapi host cliproxyapi.joseluna.dev
+	handle @cliproxyapi {
+		route {
+			reverse_proxy cli-proxy-api:8317
+		}
+	}
+
+	@gemini host gemini-cliproxyapi.joseluna.dev
+	handle @gemini {
+		route {
+			reverse_proxy cli-proxy-api:8085
+		}
+	}
+
+	@codex host codex-cliproxyapi.joseluna.dev
+	handle @codex {
+		route {
+			reverse_proxy cli-proxy-api:1455
+		}
+	}
+
+	@claude host claude-cliproxyapi.joseluna.dev
+	handle @claude {
+		route {
+			reverse_proxy cli-proxy-api:54545
+		}
+	}
+
+	@antigravity host antigravity-cliproxyapi.joseluna.dev
+	handle @antigravity {
+		route {
+			reverse_proxy cli-proxy-api:51121
 		}
 	}
 }

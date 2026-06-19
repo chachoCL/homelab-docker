@@ -1,12 +1,9 @@
 services:
     cli-proxy-api:
         image: eceasy/cli-proxy-api:v7.2.19
-        container_name:
-            cli-proxy-api
-            # env_file:
-            #   - .env
+        container_name: cli-proxy-api
         environment:
-            DEPLOY:
+            - MANAGEMENT_PASSWORD=${MANAGEMENT_PASSWORD}
         # ports:
         #   - "8317:8317"
         #   - "8085:8085"
@@ -19,3 +16,9 @@ services:
             - ./auths:/root/.cli-proxy-api
             - ./logs:/CLIProxyAPI/logs
         restart: unless-stopped
+        networks:
+            - caddy
+
+networks:
+    caddy:
+        external: true
