@@ -4,6 +4,7 @@ services:
         container_name: cli-proxy-api
         environment:
             - MANAGEMENT_PASSWORD=${MANAGEMENT_PASSWORD}
+            - DEPLOY=cloud
         # ports:
         #   - "8317:8317"
         #   - "8085:8085"
