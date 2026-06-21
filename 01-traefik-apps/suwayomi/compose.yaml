@@ -1,6 +1,6 @@
 services:
   suwayomi:
-    image: ghcr.io/suwayomi/suwayomi-server:v2.1.2087
+    image: ghcr.io/suwayomi/suwayomi-server:v2.2.2166
     container_name: suwayomi
     user: 0:0
     environment:

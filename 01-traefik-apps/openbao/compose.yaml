@@ -1,0 +1,36 @@
+services:
+  openbao:
+    image: openbao/openbao:latest
+    container_name: openbao
+    restart: unless-stopped
+#    ports:
+#      - "8200:8200"
+#      - "8201:8201"
+    networks:
+      - proxy
+    volumes:
+      - ./openbao.hcl:/openbao/config/openbao.hcl:ro
+      - ./data:/openbao/data
+    command: server -config=/openbao/config/openbao.hcl
+    environment:
+      BAO_ADDR: https://bao.joseluna.dev
+#      BAO_ADDR: http://127.0.0.1:8200
+
+  openbao-bootstrap:
+    image: openbao/openbao:latest
+    container_name: openbao-bootstrap
+    restart: unless-stopped
+    depends_on:
+      - openbao
+    volumes:
+      - ./bootstrap:/bootstrap
+    environment:
+      BAO_ADDR: http://openbao:8200
+      BOOTSTRAP_STATE_DIR: /bootstrap/state
+      BOOTSTRAP_CHECK_INTERVAL: 10
+    entrypoint: ["/bin/sh", "/bootstrap/bootstrap.sh"]
+
+
+networks:
+  proxy:
+    external: true

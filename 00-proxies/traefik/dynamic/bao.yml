@@ -1,0 +1,14 @@
+http:
+  routers:
+    bao-router:
+      rule: "host(`bao.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: bao
+  services:
+    bao:
+      loadBalancer:
+        servers:
+          - url: "http://openbao:8200"

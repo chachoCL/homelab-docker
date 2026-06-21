@@ -1,0 +1,16 @@
+http:
+  routers:
+    syncyomi:
+      rule: "Host(`syncyomi.joseluna.dev`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      middlewares:
+        - sablier-firefox@file
+      service: syncyomi
+  services:
+    syncyomi:
+      loadBalancer:
+        servers:
+          - url: "http://syncyomi:8282"

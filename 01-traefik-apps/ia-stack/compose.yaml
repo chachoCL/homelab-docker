@@ -1,7 +1,8 @@
 services:
   litellm:
-    image: ghcr.io/berriai/litellm:main-stable
+    image: ghcr.io/berriai/litellm:main-v1.83.3.rc.1
     container_name: litellm
+    restart: unless-stopped
     dns:
       - 10.0.0.4
       - 10.0.0.16
@@ -13,6 +14,10 @@ services:
       - .env
     depends_on:
       - db
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    command:
+      - "--config=/app/config.yaml"
     healthcheck:
       test: [ "CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness')\" || exit 1" ]
       interval: 30s
@@ -25,7 +30,7 @@ services:
 
   db:
     image: postgres:16-alpine
-    restart: always
+    restart: unless-stopped
     container_name: litellm_db
     environment:
       POSTGRES_DB: litellm
@@ -53,7 +58,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
       - "--storage.tsdb.retention.time=15d"
-    restart: always
+    restart: unless-stopped
 
   openwebui:
     image: ghcr.io/open-webui/open-webui:latest
