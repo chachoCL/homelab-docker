@@ -81,12 +81,8 @@ Levanta primero `00-proxies/` (red `proxy` y certificados) y después las apps.
 - Añade nuevos servicios creando una carpeta con su `compose.yaml` y, si aplica, un `env.example`.
 - Abre un PR para cambios que afecten a otros servicios o la configuración de proxies.
 
-## Información pendiente / Personalizar
+## Contacto
 
-- Dominio principal: **(poner dominio aquí)**
-- Contacto/propietario: **(tu nombre / email)**
+- Dominio principal: [joseluna.dev](https://joseluna.dev)
+- Contacto: [git@joseluna.dev](mailto:git@joseluna.dev)
 - Credenciales y secretos: no incluir en el repo; usar `.env` o un gestor de secretos.
-
----
-
-Si quieres, personalizo este `README` con más detalles: dominios, servicios críticos, procedimientos de backup/restore o instrucciones de arranque automático.
