@@ -49,8 +49,26 @@ Adapta los comandos según la estructura de cada subcarpeta.
 
 ## Backups y datos persistentes
 
-- Los datos persistentes se almacenan en volúmenes o carpetas `*_data` junto a cada servicio (ej. `excalidraw/mongodb`, `evolution-api/postgres_data`).
+- Los datos persistentes se almacenan en volúmenes o carpetas `data`, `*-data`, etc. junto a cada servicio.
 - Implementa backups regulares de los volúmenes y bases de datos (cron + `docker run --rm -v ...`).
+
+## Migrar el homelab a otro host
+
+El repo (`.gitignore` en lista blanca) solo versiona lo reproducible:
+
+1. **En Git:** `compose.yaml`, `env.example`, `Caddyfile`, `traefik/dynamic/`, `00-proxies/traefik/data/traefik.yml`, y `dockerfile`/`Dockerfile` si aplica.
+2. **Fuera de Git (restaurar en el destino):** `.env`, `acme.json`, tokens (`cf_api_token.txt`), bases de datos, carpetas `*-data`, cachés de apps.
+
+Flujo típico:
+
+```bash
+git clone <este-repo> moon-stack
+cd moon-stack
+# Por cada servicio: cp env.example .env, editar secretos, luego docker compose up -d
+# Restaurar backups de volúmenes/carpetas de datos en las rutas que monta cada compose
+```
+
+Levanta primero `00-proxies/` (red `proxy` y certificados) y después las apps.
 
 ## Seguridad y mantenimiento
 

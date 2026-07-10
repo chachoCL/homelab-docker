@@ -1,40 +1,58 @@
+# moon-stack — lista blanca: solo lo necesario para clonar y levantar el homelab.
+# Datos persistentes, secretos y cachés se recrean en el host destino (backup/volúmenes).
+
 *
 !*/
 
-# 3. EXCEPCIONES: Lo que SÍ queremos en el repo
+# --- Repo ---
 !.gitignore
 !README.md
+!**/README.md
+
+# --- Stacks (Docker Compose) ---
 !**/compose.yml
 !**/compose.yaml
 !**/docker-compose.yml
 !**/docker-compose.yaml
 !**/compose.*.yml
 !**/compose.*.yaml
-!**/Caddyfile
-!**/env.example
-!**/*.env.example
-!**/dockerfile
 
-!**/**/compose.yml
-!**/**/compose.yaml
-!**/**/docker-compose.yml
-!**/**/docker-compose.yaml
-!**/**/compose.*.yml
-!**/**/compose.*.yaml
-!**/**/Caddyfile
-!**/**/env.example
-!**/**/*.env.example
-# 4. Reglas específicas para Traefik
+# --- Imágenes custom y reverse proxy ---
+!**/dockerfile
+!**/Dockerfile
+!**/Caddyfile
 !**/traefik/dynamic/
 !**/traefik/dynamic/*.yml
 !**/traefik/dynamic/*.yaml
-!**/traefik.yml
-!**/traefik.yaml
 
-# 5. BLOQUEO EXTRA (Por si acaso alguna carpeta se quiere pasar de lista)
+# Plantillas de entorno (copiar a .env en cada máquina; nunca commitear .env)
+!**/env.example
+!**/*.env.example
+
+# --- Runtime: no versionar (migración = git clone + restaurar backups) ---
+**/data/
+**/*-data/
+**/postgres-data/
+**/redis-data/
+**/qdrant-data/
+**/volumes/
+**/letsencrypt/
+**/.env
+.env
+**/*.pem
+**/*.key
+**/acme.json
+**/cf_api_token.txt
+**/cf_api_token*
+**/*_token.txt
+**/secrets/
+
+# Excepciones mínimas dentro de carpetas de datos
+!**/*-data/**/env.example
+!00-proxies/traefik/data/traefik.yml
+
+# --- Basura habitual ---
 **/node_modules/
 **/dist/
 **/.next/
 **/.git/
-**/data/
-**/volumes/
