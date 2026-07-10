@@ -2,6 +2,21 @@
 	admin 0.0.0.0:2019
 }
 
+*.local.joseluna.dev {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+		propagation_delay 2m
+		resolvers 1.1.1.1
+	}
+
+	@adminer host adminer.local.joseluna.dev
+	handle @adminer {
+		route {
+			reverse_proxy litellm-adminer-1:8080
+		}
+	}
+}
+
 *.joseluna.dev {
 	tls {
 		dns cloudflare {env.CF_API_TOKEN}
@@ -33,6 +48,14 @@
 	@hermes host hermes.joseluna.dev
 	handle @hermes {
 		reverse_proxy http://10.0.0.32:8787 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	@hermes-desktop host hermes-desktop.joseluna.dev
+	handle @hermes-desktop {
+		reverse_proxy http://10.0.0.32:9119 {
 			header_up Host {host}
 			header_up X-Real-IP {remote_host}
 		}
@@ -177,7 +200,6 @@
 	handle @litellm {
 		route {
 			reverse_proxy litellm:4000 {
-				header_up X-Real-IP {remote_host}
 			}
 		}
 	}
@@ -222,31 +244,10 @@
 		}
 	}
 
-	@gemini host gemini-cliproxyapi.joseluna.dev
-	handle @gemini {
+	@omniroute host omniroute.joseluna.dev
+	handle @omniroute {
 		route {
-			reverse_proxy cli-proxy-api:8085
-		}
-	}
-
-	@codex host codex-cliproxyapi.joseluna.dev
-	handle @codex {
-		route {
-			reverse_proxy cli-proxy-api:1455
-		}
-	}
-
-	@claude host claude-cliproxyapi.joseluna.dev
-	handle @claude {
-		route {
-			reverse_proxy cli-proxy-api:54545
-		}
-	}
-
-	@antigravity host antigravity-cliproxyapi.joseluna.dev
-	handle @antigravity {
-		route {
-			reverse_proxy cli-proxy-api:51121
+			reverse_proxy omniroute:20128
 		}
 	}
 }

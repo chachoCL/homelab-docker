@@ -7,7 +7,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    image: infisical/infisical:v0.159.2
+    image: infisical/infisical:v0.161.3  #infisical/infisical:v0.159.2
     env_file: .env
     environment:
       - NODE_ENV=production

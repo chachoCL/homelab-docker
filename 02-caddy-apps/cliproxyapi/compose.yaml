@@ -1,6 +1,6 @@
 services:
     cli-proxy-api:
-        image: eceasy/cli-proxy-api:v7.2.19
+        image: ghcr.io/kaitranntt/cli-proxy-api-plus:v7.2.62-5 #v7.1.68-6 #eceasy/cli-proxy-api:v7.2.53  #v7.2.50
         container_name: cli-proxy-api
         environment:
             - MANAGEMENT_PASSWORD=${MANAGEMENT_PASSWORD}
@@ -15,7 +15,7 @@ services:
         volumes:
             - ./config.yaml:/CLIProxyAPI/config.yaml
             - ./auths:/root/.cli-proxy-api
-            - ./logs:/CLIProxyAPI/logs
+            - ./logs:/CLIProxyAPI/logs-
         restart: unless-stopped
         networks:
             - caddy
