@@ -1,0 +1,40 @@
+# Obscura binary cache
+tools/.obscura/
+
+# Playwright browser profile
+tools/.playwright-profile/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Obscura inspect results (regenerable)
+tools/obscura_inspect_results.json
+
+# Santander debug artifacts
+tools/santander-open-failed.*
+
+# Vendored open-banking-chile build artifacts
+backend/open-banking-chile/node_modules/
+backend/open-banking-chile/dist/
+
+# Env files
+.env
+
+# Local credentials, generated output, and debug captures
+.env.*
+!.env.example
+*.bak
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+node_modules/
+dist/
+/bchile-probe-*
+/bchile_login-dashboard.png
+/tools/santander_dashboard*
+
+# Local AI credentials
+backend/.private/

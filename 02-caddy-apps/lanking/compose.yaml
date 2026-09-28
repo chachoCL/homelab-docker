@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: lanking-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-banktrack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-database-password}
+      POSTGRES_DB: ${POSTGRES_DB:-banktrack}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-banktrack} -d ${POSTGRES_DB:-banktrack}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lanking-internal
+
+  backend:
+    build:
+      context: ./source/backend
+      dockerfile: Dockerfile
+    container_name: lanking-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-banktrack}:${POSTGRES_PASSWORD:-change-this-database-password}@db:5432/${POSTGRES_DB:-banktrack}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      LITELLM_PROXY_URL: ${LITELLM_PROXY_URL:-https://llm.joseluna.dev/v1}
+      AI_MODEL: ${AI_MODEL:-deepseek-v4-flash}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lanking-internal
+      - caddy
+
+  frontend:
+    build:
+      context: ./source/frontend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        VITE_API_URL: ""
+    container_name: lanking-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - caddy
+
+networks:
+  lanking-internal:
+    name: lanking-internal
+  caddy:
+    external: true
