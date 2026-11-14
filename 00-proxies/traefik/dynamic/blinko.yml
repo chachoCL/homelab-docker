@@ -1,0 +1,16 @@
+# Blinko (01-traefik-apps/blinko)
+http:
+  routers:
+    blinko:
+      rule: Host(`keep.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: blinko
+
+  services:
+    blinko:
+      loadBalancer:
+        servers:
+          - url: http://blinko:1111

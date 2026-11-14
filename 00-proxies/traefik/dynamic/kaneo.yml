@@ -1,0 +1,46 @@
+# Kaneo (01-traefik-apps/kaneo) — arranque bajo demanda con Sablier
+http:
+  routers:
+    kaneo:
+      rule: Host(`kaneo.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: kaneo-web
+      middlewares:
+        - sablier-kaneo@file
+      priority: 10
+    kaneo-api:
+      rule: Host(`kaneo.joseluna.dev`) && PathPrefix(`/api/`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: kaneo-api
+      middlewares:
+        - sablier-kaneo@file
+      priority: 100
+
+  services:
+    kaneo-web:
+      loadBalancer:
+        servers:
+          - url: http://kaneo-web:5173
+    kaneo-api:
+      loadBalancer:
+        servers:
+          - url: http://kaneo-api:1337
+
+  middlewares:
+    sablier-kaneo:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: kaneo
+          sessionDuration: 1h
+          dynamic:
+            displayName: Kaneo
+            showDetails: true
+            theme: ghost
+            refreshFrequency: 2s

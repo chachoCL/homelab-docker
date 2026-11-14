@@ -1,0 +1,31 @@
+# NocoDB (01-traefik-apps/noco_db) — arranque bajo demanda con Sablier
+http:
+  routers:
+    nocodb:
+      rule: Host(`nocodb.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: nocodb
+      middlewares:
+        - sablier-nocodb@file
+
+  services:
+    nocodb:
+      loadBalancer:
+        servers:
+          - url: http://nocodb:8080
+
+  middlewares:
+    sablier-nocodb:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: nocodb
+          sessionDuration: 10m
+          dynamic:
+            displayName: NocoDB
+            showDetails: true
+            theme: ghost
+            refreshFrequency: 2s

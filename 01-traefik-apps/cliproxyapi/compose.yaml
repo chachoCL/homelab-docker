@@ -1,0 +1,25 @@
+# CLIProxyAPI — https://cliproxyapi.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/cliproxyapi.yml
+# Datos: /mnt/media/alpine-app-copies-20261026/cliproxyapi/data (enlace ./data)
+
+services:
+  cliproxyapi:
+    image: eceasy/cli-proxy-api:v8.0.57
+    container_name: cliproxyapi
+    restart: unless-stopped
+    environment:
+      DEPLOY: ${DEPLOY}
+      MANAGEMENT_PASSWORD: ${MANAGEMENT_PASSWORD}
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/config.yaml:/CLIProxyAPI/config.yaml
+      - /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/auths:/root/.cli-proxy-api
+      # Ruta heredada de la migración (con guion final); se conserva tal cual
+      - /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/logs:/CLIProxyAPI/logs-
+    ports:
+      - 127.0.0.1:18410:8317
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

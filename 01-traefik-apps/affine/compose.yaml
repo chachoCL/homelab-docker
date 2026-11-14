@@ -1,0 +1,123 @@
+# AFFiNE — https://affine.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/affine.yml · Sablier: grupo "affine"
+# Datos: /mnt/media/alpine-app-copies-20261026/affine/data (enlace ./data)
+
+x-affine-env: &affine-env
+  AFFINE_REVISION: ${AFFINE_REVISION}
+  AFFINE_SERVER_EXTERNAL_URL: ${AFFINE_SERVER_EXTERNAL_URL}
+  AFFINE_SERVER_HOST: ${AFFINE_SERVER_HOST}
+  AFFINE_SERVER_HTTPS: ${AFFINE_SERVER_HTTPS}
+  AFFINE_INDEXER_ENABLED: ${AFFINE_INDEXER_ENABLED}
+  PORT: ${PORT}
+  REDIS_SERVER_HOST: ${REDIS_SERVER_HOST}
+  DATABASE_URL: ${DATABASE_URL}
+  DB_DATABASE: ${DB_DATABASE}
+  DB_USERNAME: ${DB_USERNAME}
+  DB_PASSWORD: ${DB_PASSWORD}
+  CONFIG_LOCATION: ${CONFIG_LOCATION}
+  UPLOAD_LOCATION: ${UPLOAD_LOCATION}
+  DB_DATA_LOCATION: ${DB_DATA_LOCATION}
+  MANTICORE_DATA_LOCATION: ${MANTICORE_DATA_LOCATION}
+  selfhosted: ${SELFHOSTED}
+
+x-affine-volumes: &affine-volumes
+  - /mnt/media/alpine-app-copies-20261026/affine/data/self-host/config:/root/.affine/config
+  - /mnt/media/alpine-app-copies-20261026/affine/data/self-host/storage:/root/.affine/storage
+
+x-sablier: &sablier
+  sablier.enable: "true"
+  sablier.group: affine
+
+services:
+  affine:
+    image: ghcr.io/toeverything/affine@sha256:b649f5ce2384ffdf13c23bccf81d759e15973d59d0b0058af65d895a84373099
+    container_name: affine
+    restart: unless-stopped
+    depends_on:
+      affine_migration:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      <<: *affine-env
+      DEPLOYMENT_TYPE: ${DEPLOYMENT_TYPE}
+    volumes: *affine-volumes
+    ports:
+      - 127.0.0.1:18440:3010
+    networks:
+      - private
+      - proxy
+    labels: *sablier
+
+  affine_migration:
+    image: ghcr.io/toeverything/affine@sha256:b649f5ce2384ffdf13c23bccf81d759e15973d59d0b0058af65d895a84373099
+    container_name: affine-migration
+    restart: "no"
+    command: ["sh", "-c", "node ./scripts/self-host-predeploy.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment: *affine-env
+    volumes: *affine-volumes
+    networks:
+      - private
+
+  postgres:
+    image: pgvector/pgvector@sha256:7d400e340efb42f4d8c9c12c6427adb253f726881a9985d2a471bf0eed824dff
+    container_name: affine-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
+      POSTGRES_INITDB_ARGS: ${POSTGRES_INITDB_ARGS}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/affine/data/self-host/postgres/pgdata:/var/lib/postgresql/data
+    networks:
+      - private
+    labels: *sablier
+
+  redis:
+    image: redis@sha256:d372cf7cd5ab47fb6ad1a73c45ea1104d6f3fa11cc833ff0b3ac997890b4ccec
+    container_name: affine-redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/affine/data/redis-persistent:/data
+    networks:
+      - private
+    labels: *sablier
+
+  indexer:
+    image: manticoresearch/manticore@sha256:958f201e06390ca1ab9874c3033ca7c7b2570eb1fe14b9e5c51f53f44d416297
+    container_name: affine-indexer
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-O-", "http://127.0.0.1:9308"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/affine/data/self-host/manticore:/var/lib/manticore
+    networks:
+      - private
+    labels: *sablier
+
+networks:
+  private:
+  proxy:
+    external: true

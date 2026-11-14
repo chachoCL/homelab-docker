@@ -1,0 +1,111 @@
+# LiteLLM — https://llm.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/litellm.yml
+# Datos: /mnt/media/alpine-app-copies-20261026/litellm/data (enlace ./data)
+
+services:
+  litellm:
+    image: docker.litellm.ai/berriai/litellm@sha256:60947db020b57e204823d3fbc8bb295c85be890d7c9adcc77fb4f5fc2fe410b2
+    container_name: litellm
+    restart: unless-stopped
+    command: ["--config=/app/config.yaml"]
+    depends_on:
+      - db
+    dns:
+      - 10.0.0.4
+      - 10.0.0.16
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      STORE_MODEL_IN_DB: ${STORE_MODEL_IN_DB}
+      TZ: ${TZ}
+      DATABASE_URL: ${DATABASE_URL}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MY_REDIS_PASSWORD: ${MY_REDIS_PASSWORD}
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK}
+      AWS_REGION_NAME: ${AWS_REGION_NAME}
+      CANOPY_WAVE_API_KEY: ${CANOPY_WAVE_API_KEY}
+      CANOPY_WAVE_API_KEY_FAST: ${CANOPY_WAVE_API_KEY_FAST}
+      CLINE_API_KEY: ${CLINE_API_KEY}
+      CLIPROXYAPI_API_KEY: ${CLIPROXYAPI_API_KEY}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      EXA_API_KEY: ${EXA_API_KEY}
+      KILO_2_API_KEY: ${KILO_2_API_KEY}
+      KILO_GATEWAY_API_KEY: ${KILO_GATEWAY_API_KEY}
+      OMNIROUTE_API_KEY: ${OMNIROUTE_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      XIAOMI_API_KEY: ${XIAOMI_API_KEY}
+      GITHUB_COPILOT_TOKEN_DIR: ${GITHUB_COPILOT_TOKEN_DIR}
+      GITHUB_COPILOT_ACCESS_TOKEN_FILE: ${GITHUB_COPILOT_ACCESS_TOKEN_FILE}
+      GITHUB_COPILOT_API_KEY_FILE: ${GITHUB_COPILOT_API_KEY_FILE}
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness')\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/litellm/data/config.yaml:/app/config.yaml
+    ports:
+      - 127.0.0.1:18401:4000
+    networks:
+      - private
+      - proxy
+
+  db:
+    image: postgres@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685
+    container_name: litellm-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/litellm/data/postgres_data-litellm:/var/lib/postgresql/data
+    networks:
+      - private
+
+  redis:
+    image: redis@sha256:becdda6c7f4b3fb42e42fd7f120bbf5c54c4caaaf16f26da24e4563d2c1f0576
+    container_name: litellm-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/litellm/data/redis-persistent:/data
+    networks:
+      private:
+        aliases:
+          - litellm-redis-1  # host usado en data/config.yaml (router_settings)
+
+  prometheus:
+    image: prom/prometheus@sha256:5ce7540c3c00ef4ab0c9d2c995c6a5b9c421f44b4a115d97a2c7af3b1c21cbb0
+    container_name: litellm-prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/litellm/data/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /mnt/media/alpine-app-copies-20261026/litellm/data/prometheus_data:/prometheus
+    ports:
+      - 127.0.0.1:18402:9090
+    networks:
+      - private
+
+  adminer:
+    image: adminer@sha256:f742dcf1b6ca95733b54c4e020488ce78f3e774d73543a6ded9b4eaea8974f3d
+    container_name: litellm-adminer
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:18400:8080
+    networks:
+      - private
+
+networks:
+  private:
+  proxy:
+    external: true

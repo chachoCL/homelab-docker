@@ -1,0 +1,86 @@
+# Kaneo — https://kaneo.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/kaneo.yml · Sablier: grupo "kaneo"
+# Datos: /mnt/media/alpine-app-copies-20261026/kaneo/data (enlace ./data)
+
+x-sablier: &sablier
+  sablier.enable: "true"
+  sablier.group: kaneo
+
+services:
+  kaneo-web:
+    image: ghcr.io/usekaneo/web@sha256:576870dd3a31611009fb865470d1e30d297fd7b8f472cd5d2d084d0c966a7373  # 2.29.3
+    container_name: kaneo-web
+    restart: unless-stopped
+    depends_on:
+      - kaneo-api
+    environment:
+      KANEO_CLIENT_URL: ${KANEO_CLIENT_URL}
+      KANEO_API_URL: ${KANEO_API_URL}
+    ports:
+      - 127.0.0.1:18451:5173
+    networks:
+      - private
+      - proxy
+    labels: *sablier
+
+  kaneo-api:
+    image: ghcr.io/usekaneo/api@sha256:7953654bd511dee7677ee7eef2d4741809a450c674a41a436277cfd73387121e  # 2.29.3
+    container_name: kaneo-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      KANEO_CLIENT_URL: ${KANEO_CLIENT_URL}
+      KANEO_API_URL: ${KANEO_API_URL}
+      DOMAIN: ${DOMAIN}
+      AUTH_SECRET: ${AUTH_SECRET}
+      DISABLE_GUEST_ACCESS: ${DISABLE_GUEST_ACCESS}
+      DISABLE_REGISTRATION: ${DISABLE_REGISTRATION}
+      DATABASE_URL: ${DATABASE_URL}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      CUSTOM_OAUTH_CLIENT_ID: ${CUSTOM_OAUTH_CLIENT_ID}
+      CUSTOM_OAUTH_CLIENT_SECRET: ${CUSTOM_OAUTH_CLIENT_SECRET}
+      CUSTOM_OAUTH_DISCOVERY_URL: ${CUSTOM_OAUTH_DISCOVERY_URL}
+      CUSTOM_OAUTH_AUTHORIZATION_URL: ${CUSTOM_OAUTH_AUTHORIZATION_URL}
+      CUSTOM_OAUTH_TOKEN_URL: ${CUSTOM_OAUTH_TOKEN_URL}
+      CUSTOM_OAUTH_USER_INFO_URL: ${CUSTOM_OAUTH_USER_INFO_URL}
+      CUSTOM_OAUTH_SCOPES: ${CUSTOM_OAUTH_SCOPES}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM}
+    ports:
+      - 127.0.0.1:18450:1337
+    networks:
+      - private
+      - proxy
+    labels: *sablier
+
+  postgres:
+    image: postgres@sha256:4e6e670bb069649261c9c18031f0aded7bb249a5b6664ddec29c013a89310d50
+    container_name: kaneo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/kaneo/data/postgres_data:/var/lib/postgresql/data
+    networks:
+      - private
+    labels: *sablier
+
+networks:
+  private:
+  proxy:
+    external: true

@@ -1,91 +1,53 @@
+# ExcaliDash — https://excalidash.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/excalidraw.yml
+# Datos: /mnt/media/alpine-app-copies-20261026/excalidraw/data (enlace ./data)
+
 services:
-  app:
-    image: alswl/excalidraw:v0.18.0-fork-b1
+  excalidraw:
+    image: zimengxiong/excalidash-frontend@sha256:de12bee592b2db0bcdee1b7066283297696a3e9e3a309798f78ca6c9d6caff9c
+    container_name: excalidraw
     restart: unless-stopped
-    environment:
-      - PUID=0
-      - PGID=0
-      - VITE_APP_BACKEND_V2_GET_URL=https://${STORAGE_BACKEND_HOST}/api/v2/scenes/
-      - VITE_APP_BACKEND_V2_POST_URL=https://${STORAGE_BACKEND_HOST}/api/v2/scenes/
-      - VITE_APP_WS_SERVER_URL=https://${ROOM_HOST}/
-      - VITE_APP_FIREBASE_CONFIG={}
-      - VITE_APP_HTTP_STORAGE_BACKEND_URL=https://${STORAGE_BACKEND_HOST}/api/v2
-      - VITE_APP_STORAGE_BACKEND=http
-      - VITE_APP_DISABLE_TRACKING=true
-      - PUBLIC_URL=https://${APP_HOST}
-    networks:
-      - ${TRAEFIK_NETWORK_NAME}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${TRAEFIK_NETWORK_NAME}"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-app-${TRAEFIK_ENTRYPOINT}.rule=Host(`${APP_HOST}`)"
-      - "traefik.http.services.${TRAEFIK_LABEL_ID}-app-${TRAEFIK_ENTRYPOINT}.loadbalancer.server.port=80"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-app-${TRAEFIK_ENTRYPOINT}.entrypoints=${TRAEFIK_ENTRYPOINT}"
-
-  storage:
-    image: alswl/excalidraw-storage-backend:v2023.11.11
-    restart: unless-stopped
-    environment:
-      - STORAGE_URI=mongodb://${DB_USER}:${DB_PASS}@mongodb:27017
-    networks:
-      - ${TRAEFIK_NETWORK_NAME}
-      - draw-internal
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${TRAEFIK_NETWORK_NAME}"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-storage-${TRAEFIK_ENTRYPOINT}.rule=Host(`${STORAGE_BACKEND_HOST}`)"
-      - "traefik.http.services.${TRAEFIK_LABEL_ID}-storage-${TRAEFIK_ENTRYPOINT}.loadbalancer.server.port=8080"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-storage-${TRAEFIK_ENTRYPOINT}.entrypoints=${TRAEFIK_ENTRYPOINT}"
-
-  room:
-    image: excalidraw/excalidraw-room:sha-49bf529
-    restart: unless-stopped
-    networks:
-      - ${TRAEFIK_NETWORK_NAME}      
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${TRAEFIK_NETWORK_NAME}"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-room-${TRAEFIK_ENTRYPOINT}.rule=Host(`${ROOM_HOST}`)"
-      - "traefik.http.services.${TRAEFIK_LABEL_ID}-room-${TRAEFIK_ENTRYPOINT}.loadbalancer.server.port=80"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-room-${TRAEFIK_ENTRYPOINT}.entrypoints=${TRAEFIK_ENTRYPOINT}"
-
-  mongodb:
-    image: mongo:7.0.5-jammy
-    restart: unless-stopped
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASS}
-    volumes:
-      - ${DB_VOLUME_PATH}:/data/db
-    networks:
-      - draw-internal
-    labels:
-      - "traefik.enable=false"
-
-  mongoexpress:
-    image: mongo-express:latest
-    environment:
-      - ME_CONFIG_MONGODB_URL=mongodb://${DB_USER}:${DB_PASS}@mongodb:27017
-      - ME_CONFIG_BASICAUTH=true
-      - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_USER}
-      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASS}
     depends_on:
-      - mongodb
-    restart: unless-stopped
+      - backend
+    environment:
+      BACKEND_URL: backend:8000
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - 127.0.0.1:18431:80
     networks:
-      - ${TRAEFIK_NETWORK_NAME}
-      - draw-internal
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${TRAEFIK_NETWORK_NAME}"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-db-${TRAEFIK_ENTRYPOINT}.rule=Host(`${MONGOEXPRESS_HOST}`)"
-      - "traefik.http.services.${TRAEFIK_LABEL_ID}-db-${TRAEFIK_ENTRYPOINT}.loadbalancer.server.port=8081"
-      - "traefik.http.routers.${TRAEFIK_LABEL_ID}-db-${TRAEFIK_ENTRYPOINT}.entrypoints=${TRAEFIK_ENTRYPOINT}"
+      - private
+      - proxy
+
+  backend:
+    image: zimengxiong/excalidash-backend@sha256:f37cd418bcad543add138c16cdb5e6301c3065b77344125458ab462adde99f15
+    container_name: excalidraw-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      AUTH_MODE: ${AUTH_MODE}
+      FRONTEND_URL: ${FRONTEND_URL}
+      TRUST_PROXY: ${TRUST_PROXY}
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      CSRF_SECRET: ${CSRF_SECRET}
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:8000/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/excalidraw/data/backend-data:/app/prisma
+    ports:
+      - 127.0.0.1:18430:8000
+    networks:
+      - private
 
 networks:
+  private:
   proxy:
-   # name: ${TRAEFIK_NETWORK_NAME}
     external: true
-  draw-internal:
-    name: draw-internal
-    external: false
