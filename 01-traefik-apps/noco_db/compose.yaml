@@ -1,0 +1,50 @@
+# NocoDB — https://nocodb.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/noco_db.yml · Sablier: grupo "nocodb"
+# Datos: /mnt/media/alpine-app-copies-20261026/noco_db/data (enlace ./data)
+
+x-sablier: &sablier
+  sablier.enable: "true"
+  sablier.group: nocodb
+
+services:
+  nocodb:
+    image: nocodb/nocodb@sha256:fda75aeb8a450d9ab4abd273b501aa0c625fa92f93ad72b0e57839b3310afbe4
+    container_name: nocodb
+    restart: unless-stopped
+    depends_on:
+      root_db:
+        condition: service_healthy
+    environment:
+      NC_DB: ${NC_DB}
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/noco_db/data/nc_data:/usr/app/data
+    ports:
+      - 127.0.0.1:18470:8080
+    networks:
+      - private
+      - proxy
+    labels: *sablier
+
+  root_db:
+    image: postgres@sha256:557fea37a744d5f4c8faab304b0a90858b53ab119735a88c131fd19dab802f36
+    container_name: nocodb-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/noco_db/data/db_data:/var/lib/postgresql/data
+    networks:
+      - private
+    labels: *sablier
+
+networks:
+  private:
+  proxy:
+    external: true

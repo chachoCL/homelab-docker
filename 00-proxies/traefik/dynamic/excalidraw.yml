@@ -1,0 +1,16 @@
+# ExcaliDash (01-traefik-apps/excalidraw)
+http:
+  routers:
+    excalidraw:
+      rule: Host(`excalidash.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: excalidraw
+
+  services:
+    excalidraw:
+      loadBalancer:
+        servers:
+          - url: http://excalidraw:80

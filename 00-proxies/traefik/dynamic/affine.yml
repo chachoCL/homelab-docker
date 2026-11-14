@@ -1,0 +1,31 @@
+# AFFiNE (01-traefik-apps/affine) — arranque bajo demanda con Sablier
+http:
+  routers:
+    affine:
+      rule: Host(`affine.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: affine
+      middlewares:
+        - sablier-affine@file
+
+  services:
+    affine:
+      loadBalancer:
+        servers:
+          - url: http://affine:3010
+
+  middlewares:
+    sablier-affine:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: affine
+          sessionDuration: 1h
+          dynamic:
+            displayName: AFFiNE
+            showDetails: true
+            theme: ghost
+            refreshFrequency: 2s

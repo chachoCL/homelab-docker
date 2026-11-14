@@ -1,0 +1,16 @@
+# LiteLLM (01-traefik-apps/litellm)
+http:
+  routers:
+    litellm:
+      rule: Host(`llm.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: litellm
+
+  services:
+    litellm:
+      loadBalancer:
+        servers:
+          - url: http://litellm:4000

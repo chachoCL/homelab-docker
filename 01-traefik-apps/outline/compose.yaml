@@ -1,0 +1,69 @@
+# Outline — https://outline.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/outline.yml · Sablier: grupo "outline"
+# Datos: /mnt/media/alpine-app-copies-20261026/outline/data (enlace ./data)
+# Adjuntos en Backblaze B2 (FILE_STORAGE=s3, AWS_S3_UPLOAD_METHOD=put)
+
+x-sablier: &sablier
+  sablier.enable: "true"
+  sablier.group: outline
+
+services:
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline@sha256:832051f039b446c87aa23929cf92c00980c66aaa2d744d118c48c016ec816ad8  # 1.10.1
+    container_name: outline
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/outline/data/outline-data:/var/lib/outline/data
+    ports:
+      - 127.0.0.1:18460:3000
+    networks:
+      - private
+      - proxy
+    labels: *sablier
+
+  postgres:
+    image: postgres@sha256:a9abf4275f9e99bff8e6aed712b3b7dfec9cac1341bba01c1ffdfce9ff9fc34a
+    container_name: outline-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/outline/data/postgres-data:/var/lib/postgresql
+    networks:
+      - private
+    labels: *sablier
+
+  redis:
+    image: redis@sha256:d372cf7cd5ab47fb6ad1a73c45ea1104d6f3fa11cc833ff0b3ac997890b4ccec
+    container_name: outline-redis
+    restart: unless-stopped
+    command: ["redis-server", "/redis.conf"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/outline/data/redis.conf:/redis.conf
+      - /mnt/media/alpine-app-copies-20261026/outline/data/redis-persistent:/data
+    networks:
+      - private
+    labels: *sablier
+
+networks:
+  private:
+  proxy:
+    external: true

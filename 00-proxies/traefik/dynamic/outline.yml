@@ -1,0 +1,31 @@
+# Outline (01-traefik-apps/outline) — arranque bajo demanda con Sablier
+http:
+  routers:
+    outline:
+      rule: Host(`outline.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: outline
+      middlewares:
+        - sablier-outline@file
+
+  services:
+    outline:
+      loadBalancer:
+        servers:
+          - url: http://outline:3000
+
+  middlewares:
+    sablier-outline:
+      plugin:
+        sablier:
+          sablierUrl: http://sablier:10000
+          group: outline
+          sessionDuration: 1h
+          dynamic:
+            displayName: Outline
+            showDetails: true
+            theme: ghost
+            refreshFrequency: 2s

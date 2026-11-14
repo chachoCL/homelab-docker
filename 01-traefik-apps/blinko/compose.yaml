@@ -1,0 +1,63 @@
+# Blinko — https://keep.joseluna.dev
+# Traefik: 00-proxies/traefik/dynamic/blinko.yml
+# Datos: /mnt/media/alpine-app-copies-20261026/blinko/data (enlace ./data)
+
+services:
+  blinko:
+    image: blinkospace/blinko@sha256:f7c1167f8c86db586599d849539a732929d89adb10977046e7b427813b2a84b4  # 1.8.7
+    container_name: blinko
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
+      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+    healthcheck:
+      # Next.js escucha en la IP del hostname del contenedor, no en 127.0.0.1
+      test: ["CMD-SHELL", "wget --spider -q http://$$(hostname):1111/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/blinko/data/.blinko:/app/.blinko
+    ports:
+      - 127.0.0.1:18420:1111
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    networks:
+      - private
+      - proxy
+
+  postgres:
+    image: postgres@sha256:e493b5ef86b5871b26d58203806738f4b3bed1e4ca5eb83a987d917e6b8f7bb7
+    container_name: blinko-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: ${TZ}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - /mnt/media/alpine-app-copies-20261026/blinko/data/.db:/var/lib/postgresql/data
+    networks:
+      - private
+
+networks:
+  private:
+  proxy:
+    external: true

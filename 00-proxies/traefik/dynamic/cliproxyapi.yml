@@ -1,0 +1,16 @@
+# CLIProxyAPI (01-traefik-apps/cliproxyapi)
+http:
+  routers:
+    cliproxyapi:
+      rule: Host(`cliproxyapi.joseluna.dev`)
+      entryPoints:
+        - https
+      tls:
+        certResolver: cloudflare
+      service: cliproxyapi
+
+  services:
+    cliproxyapi:
+      loadBalancer:
+        servers:
+          - url: http://cliproxyapi:8317
