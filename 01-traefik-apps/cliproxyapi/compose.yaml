@@ -13,8 +13,7 @@ services:
     volumes:
       - /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/config.yaml:/CLIProxyAPI/config.yaml
       - /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/auths:/root/.cli-proxy-api
-      # Ruta heredada de la migración (con guion final); se conserva tal cual
-      - /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/logs:/CLIProxyAPI/logs-
+      - /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/logs:/CLIProxyAPI/logs
     ports:
       - 127.0.0.1:18410:8317
     networks:

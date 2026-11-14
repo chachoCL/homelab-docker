@@ -2,7 +2,7 @@
 http:
   routers:
     litellm:
-      rule: Host(`llm.joseluna.dev`)
+      rule: Host(`llm.joseluna.dev`) || Host(`litellm.joseluna.dev`)  # litellm.* = host antiguo
       entryPoints:
         - https
       tls:
