@@ -1,0 +1,221 @@
+name: copy-affine
+services:
+  affine_migration:
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: true
+      redis:
+        condition: service_healthy
+        required: true
+    entrypoint: null
+    image: ghcr.io/toeverything/affine@sha256:b649f5ce2384ffdf13c23bccf81d759e15973d59d0b0058af65d895a84373099
+    container_name: copy-affine-affine_migration
+    restart: 'no'
+    networks:
+      private:
+        aliases:
+        - affine_migration
+        - affine_migration_job
+    labels:
+      traefik.enable: 'false'
+    environment:
+      AFFINE_INDEXER_ENABLED: ${AFFINE_MIGRATION_AFFINE_INDEXER_ENABLED}
+      AFFINE_REVISION: ${AFFINE_MIGRATION_AFFINE_REVISION}
+      AFFINE_SERVER_EXTERNAL_URL: ${AFFINE_MIGRATION_AFFINE_SERVER_EXTERNAL_URL}
+      AFFINE_SERVER_HOST: ${AFFINE_MIGRATION_AFFINE_SERVER_HOST}
+      AFFINE_SERVER_HTTPS: ${AFFINE_MIGRATION_AFFINE_SERVER_HTTPS}
+      CONFIG_LOCATION: ${AFFINE_MIGRATION_CONFIG_LOCATION}
+      DATABASE_URL: ${AFFINE_MIGRATION_DATABASE_URL}
+      DB_DATABASE: ${AFFINE_MIGRATION_DB_DATABASE}
+      DB_DATA_LOCATION: ${AFFINE_MIGRATION_DB_DATA_LOCATION}
+      DB_PASSWORD: ${AFFINE_MIGRATION_DB_PASSWORD}
+      DB_USERNAME: ${AFFINE_MIGRATION_DB_USERNAME}
+      MANTICORE_DATA_LOCATION: ${AFFINE_MIGRATION_MANTICORE_DATA_LOCATION}
+      PORT: ${AFFINE_MIGRATION_PORT}
+      REDIS_SERVER_HOST: ${AFFINE_MIGRATION_REDIS_SERVER_HOST}
+      UPLOAD_LOCATION: ${AFFINE_MIGRATION_UPLOAD_LOCATION}
+      selfhosted: ${AFFINE_MIGRATION_SELFHOSTED}
+    command:
+    - ${AFFINE_MIGRATION_CMD_0}
+    - ${AFFINE_MIGRATION_CMD_1}
+    - ${AFFINE_MIGRATION_CMD_2}
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/config
+      target: /root/.affine/config
+      read_only: false
+      bind:
+        create_host_path: false
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/storage
+      target: /root/.affine/storage
+      read_only: false
+      bind:
+        create_host_path: false
+  indexer:
+    entrypoint: null
+    image: manticoresearch/manticore@sha256:958f201e06390ca1ab9874c3033ca7c7b2570eb1fe14b9e5c51f53f44d416297
+    container_name: copy-affine-indexer
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - indexer
+        - affine_indexer
+    labels:
+      traefik.enable: 'false'
+      sablier.enable: 'true'
+      sablier.group: copy-affine
+    healthcheck:
+      test:
+      - CMD
+      - ${INDEXER_HC_0}
+      - ${INDEXER_HC_1}
+      - ${INDEXER_HC_2}
+      timeout: 5s
+      interval: 10s
+      retries: 5
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/manticore
+      target: /var/lib/manticore
+      read_only: false
+      bind:
+        create_host_path: false
+  postgres:
+    entrypoint: null
+    image: pgvector/pgvector@sha256:7d400e340efb42f4d8c9c12c6427adb253f726881a9985d2a471bf0eed824dff
+    container_name: copy-affine-postgres
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - affine_postgres
+        - postgres
+    labels:
+      traefik.enable: 'false'
+      sablier.enable: 'true'
+      sablier.group: copy-affine
+    environment:
+      POSTGRES_DB: ${POSTGRES_POSTGRES_DB}
+      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_POSTGRES_HOST_AUTH_METHOD}
+      POSTGRES_INITDB_ARGS: ${POSTGRES_POSTGRES_INITDB_ARGS}
+      POSTGRES_PASSWORD: ${POSTGRES_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_POSTGRES_USER}
+    healthcheck:
+      test:
+      - CMD
+      - ${POSTGRES_HC_0}
+      - ${POSTGRES_HC_1}
+      - ${POSTGRES_HC_2}
+      - ${POSTGRES_HC_3}
+      - ${POSTGRES_HC_4}
+      timeout: 5s
+      interval: 10s
+      retries: 5
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/postgres/pgdata
+      target: /var/lib/postgresql/data
+      read_only: false
+      bind:
+        create_host_path: false
+  redis:
+    entrypoint: null
+    image: redis@sha256:d372cf7cd5ab47fb6ad1a73c45ea1104d6f3fa11cc833ff0b3ac997890b4ccec
+    container_name: copy-affine-redis
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - redis
+        - affine_redis
+    labels:
+      traefik.enable: 'false'
+      sablier.enable: 'true'
+      sablier.group: copy-affine
+    healthcheck:
+      test:
+      - CMD
+      - ${REDIS_HC_0}
+      - ${REDIS_HC_1}
+      - ${REDIS_HC_2}
+      - ${REDIS_HC_3}
+      timeout: 5s
+      interval: 10s
+      retries: 5
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/affine/data/redis-persistent
+      target: /data
+      bind:
+        create_host_path: false
+  server:
+    depends_on:
+      affine_migration:
+        condition: service_completed_successfully
+        required: true
+      postgres:
+        condition: service_healthy
+        required: true
+      redis:
+        condition: service_healthy
+        required: true
+    entrypoint: null
+    image: ghcr.io/toeverything/affine@sha256:b649f5ce2384ffdf13c23bccf81d759e15973d59d0b0058af65d895a84373099
+    container_name: copy-affine-server
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - server
+        - affine_server
+      proxy:
+        aliases:
+        - copy-affine-server
+    labels:
+      traefik.enable: 'false'
+      sablier.enable: 'true'
+      sablier.group: copy-affine
+    environment:
+      AFFINE_INDEXER_ENABLED: ${SERVER_AFFINE_INDEXER_ENABLED}
+      AFFINE_REVISION: ${SERVER_AFFINE_REVISION}
+      AFFINE_SERVER_EXTERNAL_URL: ${SERVER_AFFINE_SERVER_EXTERNAL_URL}
+      AFFINE_SERVER_HOST: ${SERVER_AFFINE_SERVER_HOST}
+      AFFINE_SERVER_HTTPS: ${SERVER_AFFINE_SERVER_HTTPS}
+      CONFIG_LOCATION: ${SERVER_CONFIG_LOCATION}
+      DATABASE_URL: ${SERVER_DATABASE_URL}
+      DB_DATABASE: ${SERVER_DB_DATABASE}
+      DB_DATA_LOCATION: ${SERVER_DB_DATA_LOCATION}
+      DB_PASSWORD: ${SERVER_DB_PASSWORD}
+      DB_USERNAME: ${SERVER_DB_USERNAME}
+      MANTICORE_DATA_LOCATION: ${SERVER_MANTICORE_DATA_LOCATION}
+      PORT: ${SERVER_PORT}
+      REDIS_SERVER_HOST: ${SERVER_REDIS_SERVER_HOST}
+      UPLOAD_LOCATION: ${SERVER_UPLOAD_LOCATION}
+      selfhosted: ${SERVER_SELFHOSTED}
+      DEPLOYMENT_TYPE: ${SERVER_DEPLOYMENT_TYPE}
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/config
+      target: /root/.affine/config
+      read_only: false
+      bind:
+        create_host_path: false
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/storage
+      target: /root/.affine/storage
+      read_only: false
+      bind:
+        create_host_path: false
+    ports:
+    - target: 3010
+      published: '18440'
+      host_ip: 127.0.0.1
+      protocol: tcp
+networks:
+  private: {}
+  proxy:
+    external: true
+    name: proxy

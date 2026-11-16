@@ -56,3 +56,6 @@
 **/dist/
 **/.next/
 **/.git/
+
+# 6. Archivo histórico (sin secretos, versionado completo)
+!_archive/**

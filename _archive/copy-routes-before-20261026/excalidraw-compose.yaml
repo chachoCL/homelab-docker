@@ -1,0 +1,86 @@
+name: copy-excalidraw
+services:
+  backend:
+    entrypoint: null
+    image: zimengxiong/excalidash-backend@sha256:f37cd418bcad543add138c16cdb5e6301c3065b77344125458ab462adde99f15
+    container_name: copy-excalidraw-backend
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - backend
+        - excalidash-backend
+    labels:
+      traefik.enable: 'false'
+    environment:
+      AUTH_MODE: ${BACKEND_AUTH_MODE}
+      CSRF_SECRET: ${BACKEND_CSRF_SECRET}
+      DATABASE_URL: ${BACKEND_DATABASE_URL}
+      FRONTEND_URL: ${BACKEND_FRONTEND_URL}
+      JWT_SECRET: ${BACKEND_JWT_SECRET}
+      NODE_ENV: ${BACKEND_NODE_ENV}
+      PORT: ${BACKEND_PORT}
+      TRUST_PROXY: ${BACKEND_TRUST_PROXY}
+    healthcheck:
+      test:
+      - CMD
+      - ${BACKEND_HC_0}
+      - ${BACKEND_HC_1}
+      - ${BACKEND_HC_2}
+      timeout: 10s
+      interval: 30s
+      retries: 3
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/excalidraw/data/backend-data
+      target: /app/prisma
+      read_only: false
+      bind:
+        create_host_path: false
+    ports:
+    - target: 8000
+      published: '18430'
+      host_ip: 127.0.0.1
+      protocol: tcp
+  frontend:
+    depends_on:
+      backend:
+        condition: service_started
+        required: true
+    entrypoint: null
+    image: zimengxiong/excalidash-frontend@sha256:de12bee592b2db0bcdee1b7066283297696a3e9e3a309798f78ca6c9d6caff9c
+    container_name: copy-excalidraw-frontend
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - frontend
+        - excalidash-frontend
+      proxy:
+        aliases:
+        - copy-excalidraw-frontend
+    labels:
+      traefik.enable: 'false'
+    environment:
+      BACKEND_URL: ${FRONTEND_BACKEND_URL}
+    healthcheck:
+      test:
+      - CMD
+      - ${FRONTEND_HC_0}
+      - ${FRONTEND_HC_1}
+      - ${FRONTEND_HC_2}
+      - ${FRONTEND_HC_3}
+      - ${FRONTEND_HC_4}
+      timeout: 10s
+      interval: 30s
+      retries: 3
+    ports:
+    - target: 80
+      published: '18431'
+      host_ip: 127.0.0.1
+      protocol: tcp
+networks:
+  private: {}
+  proxy:
+    external: true
+    name: proxy

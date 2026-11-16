@@ -1,0 +1,88 @@
+[
+  {
+    "domain": "llm.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": "LiteLLM API - Swagger UI",
+    "bytes": 3052,
+    "sablier_wait": false,
+    "json_keys": null
+  },
+  {
+    "domain": "cliproxyapi.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": null,
+    "bytes": 116,
+    "sablier_wait": false,
+    "json_keys": [
+      "endpoints",
+      "message"
+    ]
+  },
+  {
+    "domain": "keep.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": "Blinko",
+    "bytes": 2991,
+    "sablier_wait": false,
+    "json_keys": null
+  },
+  {
+    "domain": "excalidash.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": "ExcaliDash",
+    "bytes": 818,
+    "sablier_wait": false,
+    "json_keys": null
+  },
+  {
+    "domain": "affine.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": "AFFiNE",
+    "bytes": 2689,
+    "sablier_wait": false,
+    "json_keys": null
+  },
+  {
+    "domain": "kaneo.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": "Kaneo - All you need. Nothing you don't.",
+    "bytes": 6682,
+    "sablier_wait": false,
+    "json_keys": null
+  },
+  {
+    "domain": "kaneo.joseluna.dev",
+    "path": "/api/health",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": null,
+    "bytes": 15,
+    "sablier_wait": false,
+    "json_keys": [
+      "status"
+    ]
+  },
+  {
+    "domain": "outline.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": "Outline",
+    "bytes": 14769,
+    "sablier_wait": false,
+    "json_keys": null
+  },
+  {
+    "domain": "nocodb.joseluna.dev",
+    "path": "/",
+    "http_peer_tls": "200 10.0.0.6 0",
+    "title": null,
+    "bytes": 18460,
+    "sablier_wait": false,
+    "json_keys": null
+  }
+]

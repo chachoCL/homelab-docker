@@ -1,0 +1,52 @@
+[
+  {
+    "app": "litellm",
+    "file": "compose.migration.yaml",
+    "bytes": 5173
+  },
+  {
+    "app": "cliproxyapi",
+    "file": "compose.migration.yaml",
+    "bytes": 1326
+  },
+  {
+    "app": "blinko",
+    "file": "compose.migration.yaml",
+    "bytes": 2615
+  },
+  {
+    "app": "excalidraw",
+    "file": "compose.migration.yaml",
+    "bytes": 2149
+  },
+  {
+    "app": "excalidraw",
+    "file": "compose.yaml.bak",
+    "bytes": 608
+  },
+  {
+    "app": "excalidraw",
+    "file": "compose.yaml.ext-traefik",
+    "bytes": 1808
+  },
+  {
+    "app": "affine",
+    "file": "compose.migration.yaml",
+    "bytes": 6816
+  },
+  {
+    "app": "kaneo",
+    "file": "compose.migration.yaml",
+    "bytes": 5558
+  },
+  {
+    "app": "outline",
+    "file": "compose.migration.yaml",
+    "bytes": 16116
+  },
+  {
+    "app": "noco_db",
+    "file": "compose.migration.yaml",
+    "bytes": 1918
+  }
+]

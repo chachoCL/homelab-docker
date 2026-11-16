@@ -1,0 +1,115 @@
+{
+  "backup": "/root/moon-stack-backups/compose-default-20261026T211933467486Z",
+  "apps": [
+    {
+      "app": "litellm",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-litellm"
+    },
+    {
+      "app": "cliproxyapi",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-cliproxyapi"
+    },
+    {
+      "app": "blinko",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-blinko"
+    },
+    {
+      "app": "excalidraw",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-excalidraw"
+    },
+    {
+      "app": "affine",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-affine"
+    },
+    {
+      "app": "kaneo",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-kaneo"
+    },
+    {
+      "app": "outline",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-outline"
+    },
+    {
+      "app": "noco_db",
+      "default_config_quiet": "OK",
+      "resolved_equivalent": "OK",
+      "compose_bytes_identical": true,
+      "env_unchanged_0600": true,
+      "migration_unchanged": true,
+      "data_link_ignored": true,
+      "project": "copy-noco-db"
+    }
+  ],
+  "count": 8,
+  "staged_owned_paths": [
+    "01-traefik-apps/litellm/compose.yaml",
+    "01-traefik-apps/litellm/README.md",
+    "01-traefik-apps/litellm/.gitignore",
+    "01-traefik-apps/cliproxyapi/compose.yaml",
+    "01-traefik-apps/cliproxyapi/README.md",
+    "01-traefik-apps/cliproxyapi/.gitignore",
+    "01-traefik-apps/blinko/compose.yaml",
+    "01-traefik-apps/blinko/README.md",
+    "01-traefik-apps/blinko/.gitignore",
+    "01-traefik-apps/excalidraw/compose.yaml",
+    "01-traefik-apps/excalidraw/README.md",
+    "01-traefik-apps/excalidraw/.gitignore",
+    "01-traefik-apps/affine/compose.yaml",
+    "01-traefik-apps/affine/README.md",
+    "01-traefik-apps/affine/.gitignore",
+    "01-traefik-apps/kaneo/compose.yaml",
+    "01-traefik-apps/kaneo/README.md",
+    "01-traefik-apps/kaneo/.gitignore",
+    "01-traefik-apps/outline/compose.yaml",
+    "01-traefik-apps/outline/README.md",
+    "01-traefik-apps/outline/.gitignore",
+    "01-traefik-apps/noco_db/compose.yaml",
+    "01-traefik-apps/noco_db/README.md",
+    "01-traefik-apps/noco_db/.gitignore"
+  ],
+  "unrelated_unstaged_preserved": true,
+  "container_operations": "none; only docker compose config",
+  "legacy_excalidraw_backup": "/root/moon-stack-backups/compose-default-20261026T211933467486Z/excalidraw/compose.yaml"
+}

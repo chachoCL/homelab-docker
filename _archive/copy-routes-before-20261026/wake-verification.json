@@ -1,0 +1,46 @@
+[
+  {
+    "group": "copy-affine",
+    "containers": [
+      "copy-affine-server",
+      "copy-affine-redis",
+      "copy-affine-indexer",
+      "copy-affine-postgres"
+    ],
+    "http": 200,
+    "duration": "1h",
+    "stopped_then_running": true
+  },
+  {
+    "group": "copy-kaneo",
+    "containers": [
+      "copy-kaneo-web",
+      "copy-kaneo-api",
+      "copy-kaneo-postgres"
+    ],
+    "http": 200,
+    "duration": "1h",
+    "stopped_then_running": true
+  },
+  {
+    "group": "copy-outline",
+    "containers": [
+      "copy-outline-outline",
+      "copy-outline-redis",
+      "copy-outline-postgres"
+    ],
+    "http": 200,
+    "duration": "1h",
+    "stopped_then_running": true
+  },
+  {
+    "group": "copy-noco-db",
+    "containers": [
+      "copy-noco_db-nocodb",
+      "copy-noco_db-root_db"
+    ],
+    "http": 200,
+    "duration": "10m",
+    "stopped_then_running": true
+  }
+]

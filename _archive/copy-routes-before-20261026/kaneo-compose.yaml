@@ -1,0 +1,153 @@
+name: copy-kaneo
+services:
+  api:
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: true
+    entrypoint: null
+    image: ghcr.io/usekaneo/api@sha256:7953654bd511dee7677ee7eef2d4741809a450c674a41a436277cfd73387121e
+    container_name: copy-kaneo-api
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - api
+        - kaneo-api-1
+      proxy:
+        aliases:
+        - copy-kaneo-api
+    labels:
+      traefik.enable: 'false'
+    environment:
+      AUTH_SECRET: ${API_AUTH_SECRET}
+      CUSTOM_OAUTH_AUTHORIZATION_URL: ${API_CUSTOM_OAUTH_AUTHORIZATION_URL}
+      CUSTOM_OAUTH_CLIENT_ID: ${API_CUSTOM_OAUTH_CLIENT_ID}
+      CUSTOM_OAUTH_CLIENT_SECRET: ${API_CUSTOM_OAUTH_CLIENT_SECRET}
+      CUSTOM_OAUTH_DISCOVERY_URL: ${API_CUSTOM_OAUTH_DISCOVERY_URL}
+      CUSTOM_OAUTH_SCOPES: ${API_CUSTOM_OAUTH_SCOPES}
+      CUSTOM_OAUTH_TOKEN_URL: ${API_CUSTOM_OAUTH_TOKEN_URL}
+      CUSTOM_OAUTH_USER_INFO_URL: ${API_CUSTOM_OAUTH_USER_INFO_URL}
+      DATABASE_URL: ${API_DATABASE_URL}
+      DISABLE_GUEST_ACCESS: ${API_DISABLE_GUEST_ACCESS}
+      DISABLE_REGISTRATION: ${API_DISABLE_REGISTRATION}
+      DOMAIN: ${API_DOMAIN}
+      KANEO_API_URL: ${API_KANEO_API_URL}
+      KANEO_CLIENT_URL: ${API_KANEO_CLIENT_URL}
+      POSTGRES_DB: ${API_POSTGRES_DB}
+      POSTGRES_PASSWORD: ${API_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${API_POSTGRES_USER}
+      SMTP_FROM: ${API_SMTP_FROM}
+      SMTP_HOST: ${API_SMTP_HOST}
+      SMTP_PASSWORD: ${API_SMTP_PASSWORD}
+      SMTP_PORT: ${API_SMTP_PORT}
+      SMTP_SECURE: ${API_SMTP_SECURE}
+      SMTP_USER: ${API_SMTP_USER}
+    ports:
+    - target: 1337
+      published: '18450'
+      host_ip: 127.0.0.1
+      protocol: tcp
+  postgres:
+    entrypoint: null
+    image: postgres@sha256:4e6e670bb069649261c9c18031f0aded7bb249a5b6664ddec29c013a89310d50
+    container_name: copy-kaneo-postgres
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - kaneo-postgres-1
+        - postgres
+    labels:
+      traefik.enable: 'false'
+    environment:
+      AUTH_SECRET: ${POSTGRES_AUTH_SECRET}
+      CUSTOM_OAUTH_AUTHORIZATION_URL: ${POSTGRES_CUSTOM_OAUTH_AUTHORIZATION_URL}
+      CUSTOM_OAUTH_CLIENT_ID: ${POSTGRES_CUSTOM_OAUTH_CLIENT_ID}
+      CUSTOM_OAUTH_CLIENT_SECRET: ${POSTGRES_CUSTOM_OAUTH_CLIENT_SECRET}
+      CUSTOM_OAUTH_DISCOVERY_URL: ${POSTGRES_CUSTOM_OAUTH_DISCOVERY_URL}
+      CUSTOM_OAUTH_SCOPES: ${POSTGRES_CUSTOM_OAUTH_SCOPES}
+      CUSTOM_OAUTH_TOKEN_URL: ${POSTGRES_CUSTOM_OAUTH_TOKEN_URL}
+      CUSTOM_OAUTH_USER_INFO_URL: ${POSTGRES_CUSTOM_OAUTH_USER_INFO_URL}
+      DATABASE_URL: ${POSTGRES_DATABASE_URL}
+      DISABLE_GUEST_ACCESS: ${POSTGRES_DISABLE_GUEST_ACCESS}
+      DISABLE_REGISTRATION: ${POSTGRES_DISABLE_REGISTRATION}
+      DOMAIN: ${POSTGRES_DOMAIN}
+      KANEO_API_URL: ${POSTGRES_KANEO_API_URL}
+      KANEO_CLIENT_URL: ${POSTGRES_KANEO_CLIENT_URL}
+      POSTGRES_DB: ${POSTGRES_POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_POSTGRES_USER}
+      SMTP_FROM: ${POSTGRES_SMTP_FROM}
+      SMTP_HOST: ${POSTGRES_SMTP_HOST}
+      SMTP_PASSWORD: ${POSTGRES_SMTP_PASSWORD}
+      SMTP_PORT: ${POSTGRES_SMTP_PORT}
+      SMTP_SECURE: ${POSTGRES_SMTP_SECURE}
+      SMTP_USER: ${POSTGRES_SMTP_USER}
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - ${POSTGRES_HC_0}
+      timeout: 5s
+      interval: 10s
+      retries: 5
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/kaneo/data/postgres_data
+      target: /var/lib/postgresql/data
+      read_only: false
+      bind:
+        create_host_path: false
+  web:
+    depends_on:
+      api:
+        condition: service_started
+        required: true
+    entrypoint: null
+    image: ghcr.io/usekaneo/web@sha256:576870dd3a31611009fb865470d1e30d297fd7b8f472cd5d2d084d0c966a7373
+    container_name: copy-kaneo-web
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - web
+        - kaneo-web-1
+      proxy:
+        aliases:
+        - copy-kaneo-web
+    labels:
+      traefik.enable: 'false'
+    environment:
+      AUTH_SECRET: ${WEB_AUTH_SECRET}
+      CUSTOM_OAUTH_AUTHORIZATION_URL: ${WEB_CUSTOM_OAUTH_AUTHORIZATION_URL}
+      CUSTOM_OAUTH_CLIENT_ID: ${WEB_CUSTOM_OAUTH_CLIENT_ID}
+      CUSTOM_OAUTH_CLIENT_SECRET: ${WEB_CUSTOM_OAUTH_CLIENT_SECRET}
+      CUSTOM_OAUTH_DISCOVERY_URL: ${WEB_CUSTOM_OAUTH_DISCOVERY_URL}
+      CUSTOM_OAUTH_SCOPES: ${WEB_CUSTOM_OAUTH_SCOPES}
+      CUSTOM_OAUTH_TOKEN_URL: ${WEB_CUSTOM_OAUTH_TOKEN_URL}
+      CUSTOM_OAUTH_USER_INFO_URL: ${WEB_CUSTOM_OAUTH_USER_INFO_URL}
+      DATABASE_URL: ${WEB_DATABASE_URL}
+      DISABLE_GUEST_ACCESS: ${WEB_DISABLE_GUEST_ACCESS}
+      DISABLE_REGISTRATION: ${WEB_DISABLE_REGISTRATION}
+      DOMAIN: ${WEB_DOMAIN}
+      KANEO_API_URL: ${WEB_KANEO_API_URL}
+      KANEO_CLIENT_URL: ${WEB_KANEO_CLIENT_URL}
+      POSTGRES_DB: ${WEB_POSTGRES_DB}
+      POSTGRES_PASSWORD: ${WEB_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${WEB_POSTGRES_USER}
+      SMTP_FROM: ${WEB_SMTP_FROM}
+      SMTP_HOST: ${WEB_SMTP_HOST}
+      SMTP_PASSWORD: ${WEB_SMTP_PASSWORD}
+      SMTP_PORT: ${WEB_SMTP_PORT}
+      SMTP_SECURE: ${WEB_SMTP_SECURE}
+      SMTP_USER: ${WEB_SMTP_USER}
+    ports:
+    - target: 5173
+      published: '18451'
+      host_ip: 127.0.0.1
+      protocol: tcp
+networks:
+  private: {}
+  proxy:
+    external: true
+    name: proxy

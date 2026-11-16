@@ -1,0 +1,96 @@
+name: copy-blinko
+services:
+  blinko-website:
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: true
+    entrypoint: null
+    logging:
+      options:
+        max-file: '3'
+        max-size: 10m
+    image: blinkospace/blinko@sha256:f7c1167f8c86db586599d849539a732929d89adb10977046e7b427813b2a84b4
+    container_name: copy-blinko-blinko-website
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - blinko-website
+      proxy:
+        aliases:
+        - copy-blinko-blinko-website
+    labels:
+      traefik.enable: 'false'
+    environment:
+      DATABASE_URL: ${BLINKO_WEBSITE_DATABASE_URL}
+      NEXTAUTH_SECRET: ${BLINKO_WEBSITE_NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${BLINKO_WEBSITE_NEXTAUTH_URL}
+      NEXT_PUBLIC_BASE_URL: ${BLINKO_WEBSITE_NEXT_PUBLIC_BASE_URL}
+      NODE_ENV: ${BLINKO_WEBSITE_NODE_ENV}
+      S3_FORCE_PATH_STYLE: ${BLINKO_WEBSITE_S3_FORCE_PATH_STYLE}
+      SPOTIFY_CLIENT_ID: ${BLINKO_WEBSITE_SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${BLINKO_WEBSITE_SPOTIFY_CLIENT_SECRET}
+    healthcheck:
+      test:
+      - CMD
+      - ${BLINKO_WEBSITE_HC_0}
+      - ${BLINKO_WEBSITE_HC_1}
+      - ${BLINKO_WEBSITE_HC_2}
+      - ${BLINKO_WEBSITE_HC_3}
+      timeout: 10s
+      interval: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/blinko/data/.blinko
+      target: /app/.blinko
+      read_only: false
+      bind:
+        create_host_path: false
+    ports:
+    - target: 1111
+      published: '18420'
+      host_ip: 127.0.0.1
+      protocol: tcp
+  postgres:
+    entrypoint: null
+    image: postgres@sha256:e493b5ef86b5871b26d58203806738f4b3bed1e4ca5eb83a987d917e6b8f7bb7
+    container_name: copy-blinko-postgres
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - postgres
+        - blinko-postgres
+    labels:
+      traefik.enable: 'false'
+    environment:
+      POSTGRES_DB: ${POSTGRES_POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_POSTGRES_USER}
+      TZ: ${POSTGRES_TZ}
+    healthcheck:
+      test:
+      - CMD
+      - ${POSTGRES_HC_0}
+      - ${POSTGRES_HC_1}
+      - ${POSTGRES_HC_2}
+      - ${POSTGRES_HC_3}
+      - ${POSTGRES_HC_4}
+      timeout: 10s
+      interval: 5s
+      retries: 5
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/blinko/data/.db
+      target: /var/lib/postgresql/data
+      read_only: false
+      bind:
+        create_host_path: false
+networks:
+  private: {}
+  proxy:
+    external: true
+    name: proxy

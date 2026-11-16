@@ -1,0 +1,48 @@
+name: copy-cliproxyapi
+services:
+  cli-proxy-api:
+    entrypoint: null
+    image: eceasy/cli-proxy-api@sha256:7d7203c06b4f5fd844adbc8cc8be1965e92f7e292ef169146cb9321812587a65
+    container_name: copy-cliproxyapi-cli-proxy-api
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - cli-proxy-api
+      proxy:
+        aliases:
+        - copy-cliproxyapi-cli-proxy-api
+    labels:
+      traefik.enable: 'false'
+    environment:
+      DEPLOY: ${CLI_PROXY_API_DEPLOY}
+      MANAGEMENT_PASSWORD: ${CLI_PROXY_API_MANAGEMENT_PASSWORD}
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/config.yaml
+      target: /CLIProxyAPI/config.yaml
+      read_only: false
+      bind:
+        create_host_path: false
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/logs
+      target: /CLIProxyAPI/logs-
+      read_only: false
+      bind:
+        create_host_path: false
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/auths
+      target: /root/.cli-proxy-api
+      read_only: false
+      bind:
+        create_host_path: false
+    ports:
+    - target: 8317
+      published: '18410'
+      host_ip: 127.0.0.1
+      protocol: tcp
+networks:
+  private: {}
+  proxy:
+    external: true
+    name: proxy

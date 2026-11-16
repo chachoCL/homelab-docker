@@ -1,0 +1,73 @@
+name: copy-noco-db
+services:
+  nocodb:
+    depends_on:
+      root_db:
+        condition: service_healthy
+        required: true
+    entrypoint: null
+    image: nocodb/nocodb@sha256:fda75aeb8a450d9ab4abd273b501aa0c625fa92f93ad72b0e57839b3310afbe4
+    container_name: copy-noco_db-nocodb
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - nocodb
+        - noco-db
+      proxy:
+        aliases:
+        - copy-noco_db-nocodb
+    labels:
+      traefik.enable: 'false'
+    environment:
+      NC_DB: ${NOCODB_NC_DB}
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/noco_db/data/nc_data
+      target: /usr/app/data
+      read_only: false
+      bind:
+        create_host_path: false
+    ports:
+    - target: 8080
+      published: '18470'
+      host_ip: 127.0.0.1
+      protocol: tcp
+  root_db:
+    entrypoint: null
+    image: postgres@sha256:557fea37a744d5f4c8faab304b0a90858b53ab119735a88c131fd19dab802f36
+    container_name: copy-noco_db-root_db
+    restart: unless-stopped
+    networks:
+      private:
+        aliases:
+        - noco_db-root_db-1
+        - root_db
+      proxy:
+        aliases:
+        - copy-noco_db-root_db
+    labels:
+      traefik.enable: 'false'
+    environment:
+      POSTGRES_DB: ${ROOT_DB_POSTGRES_DB}
+      POSTGRES_PASSWORD: ${ROOT_DB_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${ROOT_DB_POSTGRES_USER}
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - ${ROOT_DB_HC_0}
+      timeout: 2s
+      interval: 10s
+      retries: 10
+    volumes:
+    - type: bind
+      source: /mnt/media/alpine-app-copies-20261026/noco_db/data/db_data
+      target: /var/lib/postgresql/data
+      read_only: false
+      bind:
+        create_host_path: false
+networks:
+  private: {}
+  proxy:
+    external: true
+    name: proxy

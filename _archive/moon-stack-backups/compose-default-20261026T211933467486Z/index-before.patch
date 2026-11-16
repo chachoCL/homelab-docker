@@ -1,0 +1,2515 @@
+diff --git a/00-proxies/traefik/dynamic/affine.yml b/00-proxies/traefik/dynamic/affine.yml
+new file mode 100644
+index 0000000..615bfcb
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/affine.yml
+@@ -0,0 +1,29 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-affine:
++      rule: Host(`affine.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-affine
++      middlewares:
++      - sablier-copy-affine@file
++  services:
++    copy-affine:
++      loadBalancer:
++        servers:
++        - url: http://copy-affine-server:3010
++  middlewares:
++    sablier-copy-affine:
++      plugin:
++        sablier:
++          sablierUrl: http://sablier:10000
++          group: copy-affine
++          sessionDuration: 1h
++          dynamic:
++            displayName: affine
++            showDetails: true
++            theme: ghost
++            refreshFrequency: 2s
+diff --git a/00-proxies/traefik/dynamic/blinko.yml b/00-proxies/traefik/dynamic/blinko.yml
+new file mode 100644
+index 0000000..6eec1d8
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/blinko.yml
+@@ -0,0 +1,15 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-blinko:
++      rule: Host(`keep.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-blinko
++  services:
++    copy-blinko:
++      loadBalancer:
++        servers:
++        - url: http://copy-blinko-blinko-website:1111
+diff --git a/00-proxies/traefik/dynamic/cliproxyapi.yml b/00-proxies/traefik/dynamic/cliproxyapi.yml
+new file mode 100644
+index 0000000..ad0d68d
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/cliproxyapi.yml
+@@ -0,0 +1,15 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-cliproxyapi:
++      rule: Host(`cliproxyapi.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-cliproxyapi
++  services:
++    copy-cliproxyapi:
++      loadBalancer:
++        servers:
++        - url: http://copy-cliproxyapi-cli-proxy-api:8317
+diff --git a/00-proxies/traefik/dynamic/excalidraw.yml b/00-proxies/traefik/dynamic/excalidraw.yml
+new file mode 100644
+index 0000000..1a15f98
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/excalidraw.yml
+@@ -0,0 +1,15 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-excalidraw:
++      rule: Host(`excalidash.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-excalidraw
++  services:
++    copy-excalidraw:
++      loadBalancer:
++        servers:
++        - url: http://copy-excalidraw-frontend:80
+diff --git a/00-proxies/traefik/dynamic/kaneo.yml b/00-proxies/traefik/dynamic/kaneo.yml
+new file mode 100644
+index 0000000..5749eec
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/kaneo.yml
+@@ -0,0 +1,44 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-kaneo:
++      rule: Host(`kaneo.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-kaneo
++      middlewares:
++      - sablier-copy-kaneo@file
++      priority: 10
++    copy-kaneo-api:
++      rule: Host(`kaneo.joseluna.dev`) && PathPrefix(`/api/`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-kaneo-api
++      middlewares:
++      - sablier-copy-kaneo@file
++      priority: 100
++  services:
++    copy-kaneo:
++      loadBalancer:
++        servers:
++        - url: http://copy-kaneo-web:5173
++    copy-kaneo-api:
++      loadBalancer:
++        servers:
++        - url: http://copy-kaneo-api:1337
++  middlewares:
++    sablier-copy-kaneo:
++      plugin:
++        sablier:
++          sablierUrl: http://sablier:10000
++          group: copy-kaneo
++          sessionDuration: 1h
++          dynamic:
++            displayName: kaneo
++            showDetails: true
++            theme: ghost
++            refreshFrequency: 2s
+diff --git a/00-proxies/traefik/dynamic/litellm.yml b/00-proxies/traefik/dynamic/litellm.yml
+new file mode 100644
+index 0000000..550bb41
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/litellm.yml
+@@ -0,0 +1,15 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-litellm:
++      rule: Host(`llm.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-litellm
++  services:
++    copy-litellm:
++      loadBalancer:
++        servers:
++        - url: http://copy-litellm-litellm:4000
+diff --git a/00-proxies/traefik/dynamic/noco_db.yml b/00-proxies/traefik/dynamic/noco_db.yml
+new file mode 100644
+index 0000000..20cc8dc
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/noco_db.yml
+@@ -0,0 +1,29 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-noco-db:
++      rule: Host(`nocodb.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-noco-db
++      middlewares:
++      - sablier-copy-noco-db@file
++  services:
++    copy-noco-db:
++      loadBalancer:
++        servers:
++        - url: http://copy-noco_db-nocodb:8080
++  middlewares:
++    sablier-copy-noco-db:
++      plugin:
++        sablier:
++          sablierUrl: http://sablier:10000
++          group: copy-noco-db
++          sessionDuration: 10m
++          dynamic:
++            displayName: noco_db
++            showDetails: true
++            theme: ghost
++            refreshFrequency: 2s
+diff --git a/00-proxies/traefik/dynamic/outline.yml b/00-proxies/traefik/dynamic/outline.yml
+new file mode 100644
+index 0000000..c9a1943
+--- /dev/null
++++ b/00-proxies/traefik/dynamic/outline.yml
+@@ -0,0 +1,29 @@
++# Alpine Caddy parity; DNS unchanged. Managed copy only.
++http:
++  routers:
++    copy-outline:
++      rule: Host(`outline.joseluna.dev`)
++      entryPoints:
++      - https
++      tls:
++        certResolver: cloudflare
++      service: copy-outline
++      middlewares:
++      - sablier-copy-outline@file
++  services:
++    copy-outline:
++      loadBalancer:
++        servers:
++        - url: http://copy-outline-outline:3000
++  middlewares:
++    sablier-copy-outline:
++      plugin:
++        sablier:
++          sablierUrl: http://sablier:10000
++          group: copy-outline
++          sessionDuration: 1h
++          dynamic:
++            displayName: outline
++            showDetails: true
++            theme: ghost
++            refreshFrequency: 2s
+diff --git a/01-traefik-apps/affine/.env.example b/01-traefik-apps/affine/.env.example
+new file mode 100644
+index 0000000..97359c7
+--- /dev/null
++++ b/01-traefik-apps/affine/.env.example
+@@ -0,0 +1,52 @@
++AFFINE_MIGRATION_AFFINE_INDEXER_ENABLED=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_AFFINE_REVISION=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_AFFINE_SERVER_EXTERNAL_URL=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_AFFINE_SERVER_HOST=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_AFFINE_SERVER_HTTPS=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_CONFIG_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_DB_DATABASE=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_DB_DATA_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_DB_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_DB_USERNAME=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_MANTICORE_DATA_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_PORT=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_REDIS_SERVER_HOST=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_UPLOAD_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_SELFHOSTED=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_CMD_0=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_CMD_1=REPLACE_WITH_PRIVATE_VALUE
++AFFINE_MIGRATION_CMD_2=REPLACE_WITH_PRIVATE_VALUE
++INDEXER_HC_0=REPLACE_WITH_PRIVATE_VALUE
++INDEXER_HC_1=REPLACE_WITH_PRIVATE_VALUE
++INDEXER_HC_2=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_HOST_AUTH_METHOD=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_INITDB_ARGS=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_0=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_1=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_2=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_3=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_4=REPLACE_WITH_PRIVATE_VALUE
++REDIS_HC_0=REPLACE_WITH_PRIVATE_VALUE
++REDIS_HC_1=REPLACE_WITH_PRIVATE_VALUE
++REDIS_HC_2=REPLACE_WITH_PRIVATE_VALUE
++REDIS_HC_3=REPLACE_WITH_PRIVATE_VALUE
++SERVER_AFFINE_INDEXER_ENABLED=REPLACE_WITH_PRIVATE_VALUE
++SERVER_AFFINE_REVISION=REPLACE_WITH_PRIVATE_VALUE
++SERVER_AFFINE_SERVER_EXTERNAL_URL=REPLACE_WITH_PRIVATE_VALUE
++SERVER_AFFINE_SERVER_HOST=REPLACE_WITH_PRIVATE_VALUE
++SERVER_AFFINE_SERVER_HTTPS=REPLACE_WITH_PRIVATE_VALUE
++SERVER_CONFIG_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++SERVER_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++SERVER_DB_DATABASE=REPLACE_WITH_PRIVATE_VALUE
++SERVER_DB_DATA_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++SERVER_DB_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++SERVER_DB_USERNAME=REPLACE_WITH_PRIVATE_VALUE
++SERVER_MANTICORE_DATA_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++SERVER_PORT=REPLACE_WITH_PRIVATE_VALUE
++SERVER_REDIS_SERVER_HOST=REPLACE_WITH_PRIVATE_VALUE
++SERVER_UPLOAD_LOCATION=REPLACE_WITH_PRIVATE_VALUE
++SERVER_SELFHOSTED=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/affine/.gitignore b/01-traefik-apps/affine/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/affine/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/affine/README.md b/01-traefik-apps/affine/README.md
+new file mode 100644
+index 0000000..dd99db9
+--- /dev/null
++++ b/01-traefik-apps/affine/README.md
+@@ -0,0 +1,45 @@
++# Copia Alpine → Debian: affine
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/affine/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/affine/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- server: http://127.0.0.1:18440/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++## Reverse proxy Debian
++
++Dominio: `https://affine.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/affine.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-affine-server:3010`.
++Sablier Debian: grupo exclusivo `copy-affine`, sesión `1h`, incluyendo dependencias del stack.
++El job `affine_migration` queda excluido de Sablier para no repetir migraciones al despertar.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve affine.joseluna.dev:443:10.0.0.6 https://affine.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/affine/compose.migration.yaml b/01-traefik-apps/affine/compose.migration.yaml
+new file mode 100644
+index 0000000..afc6ce6
+--- /dev/null
++++ b/01-traefik-apps/affine/compose.migration.yaml
+@@ -0,0 +1,220 @@
++name: copy-affine
++services:
++  affine_migration:
++    depends_on:
++      postgres:
++        condition: service_healthy
++        required: true
++      redis:
++        condition: service_healthy
++        required: true
++    entrypoint: null
++    image: ghcr.io/toeverything/affine@sha256:b649f5ce2384ffdf13c23bccf81d759e15973d59d0b0058af65d895a84373099
++    container_name: copy-affine-affine_migration
++    restart: 'no'
++    networks:
++      private:
++        aliases:
++        - affine_migration
++        - affine_migration_job
++    labels:
++      traefik.enable: 'false'
++    environment:
++      AFFINE_INDEXER_ENABLED: ${AFFINE_MIGRATION_AFFINE_INDEXER_ENABLED}
++      AFFINE_REVISION: ${AFFINE_MIGRATION_AFFINE_REVISION}
++      AFFINE_SERVER_EXTERNAL_URL: ${AFFINE_MIGRATION_AFFINE_SERVER_EXTERNAL_URL}
++      AFFINE_SERVER_HOST: ${AFFINE_MIGRATION_AFFINE_SERVER_HOST}
++      AFFINE_SERVER_HTTPS: ${AFFINE_MIGRATION_AFFINE_SERVER_HTTPS}
++      CONFIG_LOCATION: ${AFFINE_MIGRATION_CONFIG_LOCATION}
++      DATABASE_URL: ${AFFINE_MIGRATION_DATABASE_URL}
++      DB_DATABASE: ${AFFINE_MIGRATION_DB_DATABASE}
++      DB_DATA_LOCATION: ${AFFINE_MIGRATION_DB_DATA_LOCATION}
++      DB_PASSWORD: ${AFFINE_MIGRATION_DB_PASSWORD}
++      DB_USERNAME: ${AFFINE_MIGRATION_DB_USERNAME}
++      MANTICORE_DATA_LOCATION: ${AFFINE_MIGRATION_MANTICORE_DATA_LOCATION}
++      PORT: ${AFFINE_MIGRATION_PORT}
++      REDIS_SERVER_HOST: ${AFFINE_MIGRATION_REDIS_SERVER_HOST}
++      UPLOAD_LOCATION: ${AFFINE_MIGRATION_UPLOAD_LOCATION}
++      selfhosted: ${AFFINE_MIGRATION_SELFHOSTED}
++    command:
++    - ${AFFINE_MIGRATION_CMD_0}
++    - ${AFFINE_MIGRATION_CMD_1}
++    - ${AFFINE_MIGRATION_CMD_2}
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/config
++      target: /root/.affine/config
++      read_only: false
++      bind:
++        create_host_path: false
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/storage
++      target: /root/.affine/storage
++      read_only: false
++      bind:
++        create_host_path: false
++  indexer:
++    entrypoint: null
++    image: manticoresearch/manticore@sha256:958f201e06390ca1ab9874c3033ca7c7b2570eb1fe14b9e5c51f53f44d416297
++    container_name: copy-affine-indexer
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - indexer
++        - affine_indexer
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-affine
++    healthcheck:
++      test:
++      - CMD
++      - ${INDEXER_HC_0}
++      - ${INDEXER_HC_1}
++      - ${INDEXER_HC_2}
++      timeout: 5s
++      interval: 10s
++      retries: 5
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/manticore
++      target: /var/lib/manticore
++      read_only: false
++      bind:
++        create_host_path: false
++  postgres:
++    entrypoint: null
++    image: pgvector/pgvector@sha256:7d400e340efb42f4d8c9c12c6427adb253f726881a9985d2a471bf0eed824dff
++    container_name: copy-affine-postgres
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - affine_postgres
++        - postgres
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-affine
++    environment:
++      POSTGRES_DB: ${POSTGRES_POSTGRES_DB}
++      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_POSTGRES_HOST_AUTH_METHOD}
++      POSTGRES_INITDB_ARGS: ${POSTGRES_POSTGRES_INITDB_ARGS}
++      POSTGRES_PASSWORD: ${POSTGRES_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${POSTGRES_POSTGRES_USER}
++    healthcheck:
++      test:
++      - CMD
++      - ${POSTGRES_HC_0}
++      - ${POSTGRES_HC_1}
++      - ${POSTGRES_HC_2}
++      - ${POSTGRES_HC_3}
++      - ${POSTGRES_HC_4}
++      timeout: 5s
++      interval: 10s
++      retries: 5
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/postgres/pgdata
++      target: /var/lib/postgresql/data
++      read_only: false
++      bind:
++        create_host_path: false
++  redis:
++    entrypoint: null
++    image: redis@sha256:d372cf7cd5ab47fb6ad1a73c45ea1104d6f3fa11cc833ff0b3ac997890b4ccec
++    container_name: copy-affine-redis
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - redis
++        - affine_redis
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-affine
++    healthcheck:
++      test:
++      - CMD
++      - ${REDIS_HC_0}
++      - ${REDIS_HC_1}
++      - ${REDIS_HC_2}
++      - ${REDIS_HC_3}
++      timeout: 5s
++      interval: 10s
++      retries: 5
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/affine/data/redis-persistent
++      target: /data
++      bind:
++        create_host_path: false
++  server:
++    depends_on:
++      affine_migration:
++        condition: service_completed_successfully
++        required: true
++      postgres:
++        condition: service_healthy
++        required: true
++      redis:
++        condition: service_healthy
++        required: true
++    entrypoint: null
++    image: ghcr.io/toeverything/affine@sha256:b649f5ce2384ffdf13c23bccf81d759e15973d59d0b0058af65d895a84373099
++    container_name: copy-affine-server
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - server
++        - affine_server
++      proxy:
++        aliases:
++        - copy-affine-server
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-affine
++    environment:
++      AFFINE_INDEXER_ENABLED: ${SERVER_AFFINE_INDEXER_ENABLED}
++      AFFINE_REVISION: ${SERVER_AFFINE_REVISION}
++      AFFINE_SERVER_EXTERNAL_URL: ${SERVER_AFFINE_SERVER_EXTERNAL_URL}
++      AFFINE_SERVER_HOST: ${SERVER_AFFINE_SERVER_HOST}
++      AFFINE_SERVER_HTTPS: ${SERVER_AFFINE_SERVER_HTTPS}
++      CONFIG_LOCATION: ${SERVER_CONFIG_LOCATION}
++      DATABASE_URL: ${SERVER_DATABASE_URL}
++      DB_DATABASE: ${SERVER_DB_DATABASE}
++      DB_DATA_LOCATION: ${SERVER_DB_DATA_LOCATION}
++      DB_PASSWORD: ${SERVER_DB_PASSWORD}
++      DB_USERNAME: ${SERVER_DB_USERNAME}
++      MANTICORE_DATA_LOCATION: ${SERVER_MANTICORE_DATA_LOCATION}
++      PORT: ${SERVER_PORT}
++      REDIS_SERVER_HOST: ${SERVER_REDIS_SERVER_HOST}
++      UPLOAD_LOCATION: ${SERVER_UPLOAD_LOCATION}
++      selfhosted: ${SERVER_SELFHOSTED}
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/config
++      target: /root/.affine/config
++      read_only: false
++      bind:
++        create_host_path: false
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/affine/data/self-host/storage
++      target: /root/.affine/storage
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 3010
++      published: '18440'
++      host_ip: 127.0.0.1
++      protocol: tcp
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy
+diff --git a/01-traefik-apps/blinko/.env.example b/01-traefik-apps/blinko/.env.example
+new file mode 100644
+index 0000000..fd93aa6
+--- /dev/null
++++ b/01-traefik-apps/blinko/.env.example
+@@ -0,0 +1,21 @@
++BLINKO_WEBSITE_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_NEXTAUTH_SECRET=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_NEXTAUTH_URL=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_NEXT_PUBLIC_BASE_URL=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_NODE_ENV=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_S3_FORCE_PATH_STYLE=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_SPOTIFY_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_SPOTIFY_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_HC_0=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_HC_1=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_HC_2=REPLACE_WITH_PRIVATE_VALUE
++BLINKO_WEBSITE_HC_3=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_TZ=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_0=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_1=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_2=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_3=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_4=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/blinko/.gitignore b/01-traefik-apps/blinko/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/blinko/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/blinko/README.md b/01-traefik-apps/blinko/README.md
+new file mode 100644
+index 0000000..7e9e853
+--- /dev/null
++++ b/01-traefik-apps/blinko/README.md
+@@ -0,0 +1,44 @@
++# Copia Alpine → Debian: blinko
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/blinko/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/blinko/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- blinko-website: http://127.0.0.1:18420/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++## Reverse proxy Debian
++
++Dominio: `https://keep.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/blinko.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-blinko-blinko-website:1111`.
++Sin middleware/etiquetas Sablier, igual que en Caddy origen: siempre activo.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve keep.joseluna.dev:443:10.0.0.6 https://keep.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/blinko/compose.migration.yaml b/01-traefik-apps/blinko/compose.migration.yaml
+new file mode 100644
+index 0000000..f2556b5
+--- /dev/null
++++ b/01-traefik-apps/blinko/compose.migration.yaml
+@@ -0,0 +1,96 @@
++name: copy-blinko
++services:
++  blinko-website:
++    depends_on:
++      postgres:
++        condition: service_healthy
++        required: true
++    entrypoint: null
++    logging:
++      options:
++        max-file: '3'
++        max-size: 10m
++    image: blinkospace/blinko@sha256:f7c1167f8c86db586599d849539a732929d89adb10977046e7b427813b2a84b4
++    container_name: copy-blinko-blinko-website
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - blinko-website
++      proxy:
++        aliases:
++        - copy-blinko-blinko-website
++    labels:
++      traefik.enable: 'false'
++    environment:
++      DATABASE_URL: ${BLINKO_WEBSITE_DATABASE_URL}
++      NEXTAUTH_SECRET: ${BLINKO_WEBSITE_NEXTAUTH_SECRET}
++      NEXTAUTH_URL: ${BLINKO_WEBSITE_NEXTAUTH_URL}
++      NEXT_PUBLIC_BASE_URL: ${BLINKO_WEBSITE_NEXT_PUBLIC_BASE_URL}
++      NODE_ENV: ${BLINKO_WEBSITE_NODE_ENV}
++      S3_FORCE_PATH_STYLE: ${BLINKO_WEBSITE_S3_FORCE_PATH_STYLE}
++      SPOTIFY_CLIENT_ID: ${BLINKO_WEBSITE_SPOTIFY_CLIENT_ID}
++      SPOTIFY_CLIENT_SECRET: ${BLINKO_WEBSITE_SPOTIFY_CLIENT_SECRET}
++    healthcheck:
++      test:
++      - CMD
++      - ${BLINKO_WEBSITE_HC_0}
++      - ${BLINKO_WEBSITE_HC_1}
++      - ${BLINKO_WEBSITE_HC_2}
++      - ${BLINKO_WEBSITE_HC_3}
++      timeout: 10s
++      interval: 30s
++      retries: 5
++      start_period: 30s
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/blinko/data/.blinko
++      target: /app/.blinko
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 1111
++      published: '18420'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  postgres:
++    entrypoint: null
++    image: postgres@sha256:e493b5ef86b5871b26d58203806738f4b3bed1e4ca5eb83a987d917e6b8f7bb7
++    container_name: copy-blinko-postgres
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - postgres
++        - blinko-postgres
++    labels:
++      traefik.enable: 'false'
++    environment:
++      POSTGRES_DB: ${POSTGRES_POSTGRES_DB}
++      POSTGRES_PASSWORD: ${POSTGRES_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${POSTGRES_POSTGRES_USER}
++      TZ: ${POSTGRES_TZ}
++    healthcheck:
++      test:
++      - CMD
++      - ${POSTGRES_HC_0}
++      - ${POSTGRES_HC_1}
++      - ${POSTGRES_HC_2}
++      - ${POSTGRES_HC_3}
++      - ${POSTGRES_HC_4}
++      timeout: 10s
++      interval: 5s
++      retries: 5
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/blinko/data/.db
++      target: /var/lib/postgresql/data
++      read_only: false
++      bind:
++        create_host_path: false
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy
+diff --git a/01-traefik-apps/cliproxyapi/.env.example b/01-traefik-apps/cliproxyapi/.env.example
+new file mode 100644
+index 0000000..2487167
+--- /dev/null
++++ b/01-traefik-apps/cliproxyapi/.env.example
+@@ -0,0 +1,2 @@
++CLI_PROXY_API_DEPLOY=REPLACE_WITH_PRIVATE_VALUE
++CLI_PROXY_API_MANAGEMENT_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/cliproxyapi/.gitignore b/01-traefik-apps/cliproxyapi/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/cliproxyapi/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/cliproxyapi/README.md b/01-traefik-apps/cliproxyapi/README.md
+new file mode 100644
+index 0000000..b5f866b
+--- /dev/null
++++ b/01-traefik-apps/cliproxyapi/README.md
+@@ -0,0 +1,46 @@
++# Copia Alpine → Debian: cliproxyapi
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/cliproxyapi/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/cliproxyapi/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- cli-proxy-api: http://127.0.0.1:18410/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++Validación adicional: auths actualizados de nuevo y SHA-256 idénticos (19 archivos). La primera copia se conserva en backups/auths-before-refresh.tar. Tokens pueden renovarse en origen posteriormente.
++
++## Reverse proxy Debian
++
++Dominio: `https://cliproxyapi.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/cliproxyapi.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-cliproxyapi-cli-proxy-api:8317`.
++Sin middleware/etiquetas Sablier, igual que en Caddy origen: siempre activo.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve cliproxyapi.joseluna.dev:443:10.0.0.6 https://cliproxyapi.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/cliproxyapi/compose.migration.yaml b/01-traefik-apps/cliproxyapi/compose.migration.yaml
+new file mode 100644
+index 0000000..0f9cf95
+--- /dev/null
++++ b/01-traefik-apps/cliproxyapi/compose.migration.yaml
+@@ -0,0 +1,48 @@
++name: copy-cliproxyapi
++services:
++  cli-proxy-api:
++    entrypoint: null
++    image: eceasy/cli-proxy-api@sha256:7d7203c06b4f5fd844adbc8cc8be1965e92f7e292ef169146cb9321812587a65
++    container_name: copy-cliproxyapi-cli-proxy-api
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - cli-proxy-api
++      proxy:
++        aliases:
++        - copy-cliproxyapi-cli-proxy-api
++    labels:
++      traefik.enable: 'false'
++    environment:
++      DEPLOY: ${CLI_PROXY_API_DEPLOY}
++      MANAGEMENT_PASSWORD: ${CLI_PROXY_API_MANAGEMENT_PASSWORD}
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/config.yaml
++      target: /CLIProxyAPI/config.yaml
++      read_only: false
++      bind:
++        create_host_path: false
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/logs
++      target: /CLIProxyAPI/logs-
++      read_only: false
++      bind:
++        create_host_path: false
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/cliproxyapi/data/auths
++      target: /root/.cli-proxy-api
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 8317
++      published: '18410'
++      host_ip: 127.0.0.1
++      protocol: tcp
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy
+diff --git a/01-traefik-apps/excalidraw/.env.example b/01-traefik-apps/excalidraw/.env.example
+new file mode 100644
+index 0000000..658bd2d
+--- /dev/null
++++ b/01-traefik-apps/excalidraw/.env.example
+@@ -0,0 +1,17 @@
++BACKEND_AUTH_MODE=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_CSRF_SECRET=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_FRONTEND_URL=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_JWT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_NODE_ENV=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_PORT=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_TRUST_PROXY=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_HC_0=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_HC_1=REPLACE_WITH_PRIVATE_VALUE
++BACKEND_HC_2=REPLACE_WITH_PRIVATE_VALUE
++FRONTEND_BACKEND_URL=REPLACE_WITH_PRIVATE_VALUE
++FRONTEND_HC_0=REPLACE_WITH_PRIVATE_VALUE
++FRONTEND_HC_1=REPLACE_WITH_PRIVATE_VALUE
++FRONTEND_HC_2=REPLACE_WITH_PRIVATE_VALUE
++FRONTEND_HC_3=REPLACE_WITH_PRIVATE_VALUE
++FRONTEND_HC_4=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/excalidraw/.gitignore b/01-traefik-apps/excalidraw/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/excalidraw/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/excalidraw/README.md b/01-traefik-apps/excalidraw/README.md
+new file mode 100644
+index 0000000..de44c7f
+--- /dev/null
++++ b/01-traefik-apps/excalidraw/README.md
+@@ -0,0 +1,45 @@
++# Copia Alpine → Debian: excalidraw
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/excalidraw/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/excalidraw/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- backend: http://127.0.0.1:18430/
++- frontend: http://127.0.0.1:18431/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++## Reverse proxy Debian
++
++Dominio: `https://excalidash.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/excalidraw.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-excalidraw-frontend:80`.
++Sin middleware/etiquetas Sablier, igual que en Caddy origen: siempre activo.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve excalidash.joseluna.dev:443:10.0.0.6 https://excalidash.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/excalidraw/compose.migration.yaml b/01-traefik-apps/excalidraw/compose.migration.yaml
+new file mode 100644
+index 0000000..d2f5d82
+--- /dev/null
++++ b/01-traefik-apps/excalidraw/compose.migration.yaml
+@@ -0,0 +1,86 @@
++name: copy-excalidraw
++services:
++  backend:
++    entrypoint: null
++    image: zimengxiong/excalidash-backend@sha256:f37cd418bcad543add138c16cdb5e6301c3065b77344125458ab462adde99f15
++    container_name: copy-excalidraw-backend
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - backend
++        - excalidash-backend
++    labels:
++      traefik.enable: 'false'
++    environment:
++      AUTH_MODE: ${BACKEND_AUTH_MODE}
++      CSRF_SECRET: ${BACKEND_CSRF_SECRET}
++      DATABASE_URL: ${BACKEND_DATABASE_URL}
++      FRONTEND_URL: ${BACKEND_FRONTEND_URL}
++      JWT_SECRET: ${BACKEND_JWT_SECRET}
++      NODE_ENV: ${BACKEND_NODE_ENV}
++      PORT: ${BACKEND_PORT}
++      TRUST_PROXY: ${BACKEND_TRUST_PROXY}
++    healthcheck:
++      test:
++      - CMD
++      - ${BACKEND_HC_0}
++      - ${BACKEND_HC_1}
++      - ${BACKEND_HC_2}
++      timeout: 10s
++      interval: 30s
++      retries: 3
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/excalidraw/data/backend-data
++      target: /app/prisma
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 8000
++      published: '18430'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  frontend:
++    depends_on:
++      backend:
++        condition: service_started
++        required: true
++    entrypoint: null
++    image: zimengxiong/excalidash-frontend@sha256:de12bee592b2db0bcdee1b7066283297696a3e9e3a309798f78ca6c9d6caff9c
++    container_name: copy-excalidraw-frontend
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - frontend
++        - excalidash-frontend
++      proxy:
++        aliases:
++        - copy-excalidraw-frontend
++    labels:
++      traefik.enable: 'false'
++    environment:
++      BACKEND_URL: ${FRONTEND_BACKEND_URL}
++    healthcheck:
++      test:
++      - CMD
++      - ${FRONTEND_HC_0}
++      - ${FRONTEND_HC_1}
++      - ${FRONTEND_HC_2}
++      - ${FRONTEND_HC_3}
++      - ${FRONTEND_HC_4}
++      timeout: 10s
++      interval: 30s
++      retries: 3
++    ports:
++    - target: 80
++      published: '18431'
++      host_ip: 127.0.0.1
++      protocol: tcp
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy
+diff --git a/01-traefik-apps/kaneo/.env.example b/01-traefik-apps/kaneo/.env.example
+new file mode 100644
+index 0000000..850e56a
+--- /dev/null
++++ b/01-traefik-apps/kaneo/.env.example
+@@ -0,0 +1,70 @@
++API_AUTH_SECRET=REPLACE_WITH_PRIVATE_VALUE
++API_CUSTOM_OAUTH_AUTHORIZATION_URL=REPLACE_WITH_PRIVATE_VALUE
++API_CUSTOM_OAUTH_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++API_CUSTOM_OAUTH_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++API_CUSTOM_OAUTH_DISCOVERY_URL=REPLACE_WITH_PRIVATE_VALUE
++API_CUSTOM_OAUTH_SCOPES=REPLACE_WITH_PRIVATE_VALUE
++API_CUSTOM_OAUTH_TOKEN_URL=REPLACE_WITH_PRIVATE_VALUE
++API_CUSTOM_OAUTH_USER_INFO_URL=REPLACE_WITH_PRIVATE_VALUE
++API_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++API_DISABLE_GUEST_ACCESS=REPLACE_WITH_PRIVATE_VALUE
++API_DISABLE_REGISTRATION=REPLACE_WITH_PRIVATE_VALUE
++API_DOMAIN=REPLACE_WITH_PRIVATE_VALUE
++API_KANEO_API_URL=REPLACE_WITH_PRIVATE_VALUE
++API_KANEO_CLIENT_URL=REPLACE_WITH_PRIVATE_VALUE
++API_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++API_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++API_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++API_SMTP_FROM=REPLACE_WITH_PRIVATE_VALUE
++API_SMTP_HOST=REPLACE_WITH_PRIVATE_VALUE
++API_SMTP_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++API_SMTP_PORT=REPLACE_WITH_PRIVATE_VALUE
++API_SMTP_SECURE=REPLACE_WITH_PRIVATE_VALUE
++API_SMTP_USER=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AUTH_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CUSTOM_OAUTH_AUTHORIZATION_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CUSTOM_OAUTH_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CUSTOM_OAUTH_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CUSTOM_OAUTH_DISCOVERY_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CUSTOM_OAUTH_SCOPES=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CUSTOM_OAUTH_TOKEN_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CUSTOM_OAUTH_USER_INFO_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DISABLE_GUEST_ACCESS=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DISABLE_REGISTRATION=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DOMAIN=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_KANEO_API_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_KANEO_CLIENT_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_FROM=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_HOST=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_PORT=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_SECURE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_USER=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_0=REPLACE_WITH_PRIVATE_VALUE
++WEB_AUTH_SECRET=REPLACE_WITH_PRIVATE_VALUE
++WEB_CUSTOM_OAUTH_AUTHORIZATION_URL=REPLACE_WITH_PRIVATE_VALUE
++WEB_CUSTOM_OAUTH_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++WEB_CUSTOM_OAUTH_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++WEB_CUSTOM_OAUTH_DISCOVERY_URL=REPLACE_WITH_PRIVATE_VALUE
++WEB_CUSTOM_OAUTH_SCOPES=REPLACE_WITH_PRIVATE_VALUE
++WEB_CUSTOM_OAUTH_TOKEN_URL=REPLACE_WITH_PRIVATE_VALUE
++WEB_CUSTOM_OAUTH_USER_INFO_URL=REPLACE_WITH_PRIVATE_VALUE
++WEB_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++WEB_DISABLE_GUEST_ACCESS=REPLACE_WITH_PRIVATE_VALUE
++WEB_DISABLE_REGISTRATION=REPLACE_WITH_PRIVATE_VALUE
++WEB_DOMAIN=REPLACE_WITH_PRIVATE_VALUE
++WEB_KANEO_API_URL=REPLACE_WITH_PRIVATE_VALUE
++WEB_KANEO_CLIENT_URL=REPLACE_WITH_PRIVATE_VALUE
++WEB_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++WEB_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++WEB_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++WEB_SMTP_FROM=REPLACE_WITH_PRIVATE_VALUE
++WEB_SMTP_HOST=REPLACE_WITH_PRIVATE_VALUE
++WEB_SMTP_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++WEB_SMTP_PORT=REPLACE_WITH_PRIVATE_VALUE
++WEB_SMTP_SECURE=REPLACE_WITH_PRIVATE_VALUE
++WEB_SMTP_USER=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/kaneo/.gitignore b/01-traefik-apps/kaneo/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/kaneo/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/kaneo/README.md b/01-traefik-apps/kaneo/README.md
+new file mode 100644
+index 0000000..c022a88
+--- /dev/null
++++ b/01-traefik-apps/kaneo/README.md
+@@ -0,0 +1,46 @@
++# Copia Alpine → Debian: kaneo
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/kaneo/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/kaneo/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- api: http://127.0.0.1:18450/
++- web: http://127.0.0.1:18451/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++## Reverse proxy Debian
++
++Dominio: `https://kaneo.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/kaneo.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-kaneo-web:5173`.
++`/api/*` → `copy-kaneo-api:1337`, prioridad 100; resto → web, prioridad 10. Se conserva `/api/` sin StripPrefix.
++Sablier Debian: grupo exclusivo `copy-kaneo`, sesión `1h`, incluyendo dependencias del stack.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve kaneo.joseluna.dev:443:10.0.0.6 https://kaneo.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/kaneo/compose.migration.yaml b/01-traefik-apps/kaneo/compose.migration.yaml
+new file mode 100644
+index 0000000..d873562
+--- /dev/null
++++ b/01-traefik-apps/kaneo/compose.migration.yaml
+@@ -0,0 +1,159 @@
++name: copy-kaneo
++services:
++  api:
++    depends_on:
++      postgres:
++        condition: service_healthy
++        required: true
++    entrypoint: null
++    image: ghcr.io/usekaneo/api@sha256:7953654bd511dee7677ee7eef2d4741809a450c674a41a436277cfd73387121e
++    container_name: copy-kaneo-api
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - api
++        - kaneo-api-1
++      proxy:
++        aliases:
++        - copy-kaneo-api
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-kaneo
++    environment:
++      AUTH_SECRET: ${API_AUTH_SECRET}
++      CUSTOM_OAUTH_AUTHORIZATION_URL: ${API_CUSTOM_OAUTH_AUTHORIZATION_URL}
++      CUSTOM_OAUTH_CLIENT_ID: ${API_CUSTOM_OAUTH_CLIENT_ID}
++      CUSTOM_OAUTH_CLIENT_SECRET: ${API_CUSTOM_OAUTH_CLIENT_SECRET}
++      CUSTOM_OAUTH_DISCOVERY_URL: ${API_CUSTOM_OAUTH_DISCOVERY_URL}
++      CUSTOM_OAUTH_SCOPES: ${API_CUSTOM_OAUTH_SCOPES}
++      CUSTOM_OAUTH_TOKEN_URL: ${API_CUSTOM_OAUTH_TOKEN_URL}
++      CUSTOM_OAUTH_USER_INFO_URL: ${API_CUSTOM_OAUTH_USER_INFO_URL}
++      DATABASE_URL: ${API_DATABASE_URL}
++      DISABLE_GUEST_ACCESS: ${API_DISABLE_GUEST_ACCESS}
++      DISABLE_REGISTRATION: ${API_DISABLE_REGISTRATION}
++      DOMAIN: ${API_DOMAIN}
++      KANEO_API_URL: ${API_KANEO_API_URL}
++      KANEO_CLIENT_URL: ${API_KANEO_CLIENT_URL}
++      POSTGRES_DB: ${API_POSTGRES_DB}
++      POSTGRES_PASSWORD: ${API_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${API_POSTGRES_USER}
++      SMTP_FROM: ${API_SMTP_FROM}
++      SMTP_HOST: ${API_SMTP_HOST}
++      SMTP_PASSWORD: ${API_SMTP_PASSWORD}
++      SMTP_PORT: ${API_SMTP_PORT}
++      SMTP_SECURE: ${API_SMTP_SECURE}
++      SMTP_USER: ${API_SMTP_USER}
++    ports:
++    - target: 1337
++      published: '18450'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  postgres:
++    entrypoint: null
++    image: postgres@sha256:4e6e670bb069649261c9c18031f0aded7bb249a5b6664ddec29c013a89310d50
++    container_name: copy-kaneo-postgres
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - kaneo-postgres-1
++        - postgres
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-kaneo
++    environment:
++      AUTH_SECRET: ${POSTGRES_AUTH_SECRET}
++      CUSTOM_OAUTH_AUTHORIZATION_URL: ${POSTGRES_CUSTOM_OAUTH_AUTHORIZATION_URL}
++      CUSTOM_OAUTH_CLIENT_ID: ${POSTGRES_CUSTOM_OAUTH_CLIENT_ID}
++      CUSTOM_OAUTH_CLIENT_SECRET: ${POSTGRES_CUSTOM_OAUTH_CLIENT_SECRET}
++      CUSTOM_OAUTH_DISCOVERY_URL: ${POSTGRES_CUSTOM_OAUTH_DISCOVERY_URL}
++      CUSTOM_OAUTH_SCOPES: ${POSTGRES_CUSTOM_OAUTH_SCOPES}
++      CUSTOM_OAUTH_TOKEN_URL: ${POSTGRES_CUSTOM_OAUTH_TOKEN_URL}
++      CUSTOM_OAUTH_USER_INFO_URL: ${POSTGRES_CUSTOM_OAUTH_USER_INFO_URL}
++      DATABASE_URL: ${POSTGRES_DATABASE_URL}
++      DISABLE_GUEST_ACCESS: ${POSTGRES_DISABLE_GUEST_ACCESS}
++      DISABLE_REGISTRATION: ${POSTGRES_DISABLE_REGISTRATION}
++      DOMAIN: ${POSTGRES_DOMAIN}
++      KANEO_API_URL: ${POSTGRES_KANEO_API_URL}
++      KANEO_CLIENT_URL: ${POSTGRES_KANEO_CLIENT_URL}
++      POSTGRES_DB: ${POSTGRES_POSTGRES_DB}
++      POSTGRES_PASSWORD: ${POSTGRES_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${POSTGRES_POSTGRES_USER}
++      SMTP_FROM: ${POSTGRES_SMTP_FROM}
++      SMTP_HOST: ${POSTGRES_SMTP_HOST}
++      SMTP_PASSWORD: ${POSTGRES_SMTP_PASSWORD}
++      SMTP_PORT: ${POSTGRES_SMTP_PORT}
++      SMTP_SECURE: ${POSTGRES_SMTP_SECURE}
++      SMTP_USER: ${POSTGRES_SMTP_USER}
++    healthcheck:
++      test:
++      - CMD-SHELL
++      - ${POSTGRES_HC_0}
++      timeout: 5s
++      interval: 10s
++      retries: 5
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/kaneo/data/postgres_data
++      target: /var/lib/postgresql/data
++      read_only: false
++      bind:
++        create_host_path: false
++  web:
++    depends_on:
++      api:
++        condition: service_started
++        required: true
++    entrypoint: null
++    image: ghcr.io/usekaneo/web@sha256:576870dd3a31611009fb865470d1e30d297fd7b8f472cd5d2d084d0c966a7373
++    container_name: copy-kaneo-web
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - web
++        - kaneo-web-1
++      proxy:
++        aliases:
++        - copy-kaneo-web
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-kaneo
++    environment:
++      AUTH_SECRET: ${WEB_AUTH_SECRET}
++      CUSTOM_OAUTH_AUTHORIZATION_URL: ${WEB_CUSTOM_OAUTH_AUTHORIZATION_URL}
++      CUSTOM_OAUTH_CLIENT_ID: ${WEB_CUSTOM_OAUTH_CLIENT_ID}
++      CUSTOM_OAUTH_CLIENT_SECRET: ${WEB_CUSTOM_OAUTH_CLIENT_SECRET}
++      CUSTOM_OAUTH_DISCOVERY_URL: ${WEB_CUSTOM_OAUTH_DISCOVERY_URL}
++      CUSTOM_OAUTH_SCOPES: ${WEB_CUSTOM_OAUTH_SCOPES}
++      CUSTOM_OAUTH_TOKEN_URL: ${WEB_CUSTOM_OAUTH_TOKEN_URL}
++      CUSTOM_OAUTH_USER_INFO_URL: ${WEB_CUSTOM_OAUTH_USER_INFO_URL}
++      DATABASE_URL: ${WEB_DATABASE_URL}
++      DISABLE_GUEST_ACCESS: ${WEB_DISABLE_GUEST_ACCESS}
++      DISABLE_REGISTRATION: ${WEB_DISABLE_REGISTRATION}
++      DOMAIN: ${WEB_DOMAIN}
++      KANEO_API_URL: ${WEB_KANEO_API_URL}
++      KANEO_CLIENT_URL: ${WEB_KANEO_CLIENT_URL}
++      POSTGRES_DB: ${WEB_POSTGRES_DB}
++      POSTGRES_PASSWORD: ${WEB_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${WEB_POSTGRES_USER}
++      SMTP_FROM: ${WEB_SMTP_FROM}
++      SMTP_HOST: ${WEB_SMTP_HOST}
++      SMTP_PASSWORD: ${WEB_SMTP_PASSWORD}
++      SMTP_PORT: ${WEB_SMTP_PORT}
++      SMTP_SECURE: ${WEB_SMTP_SECURE}
++      SMTP_USER: ${WEB_SMTP_USER}
++    ports:
++    - target: 5173
++      published: '18451'
++      host_ip: 127.0.0.1
++      protocol: tcp
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy
+diff --git a/01-traefik-apps/litellm/.env.example b/01-traefik-apps/litellm/.env.example
+new file mode 100644
+index 0000000..94cc13b
+--- /dev/null
++++ b/01-traefik-apps/litellm/.env.example
+@@ -0,0 +1,36 @@
++DB_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++DB_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++DB_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++DB_HC_0=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_AWS_BEARER_TOKEN_BEDROCK=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_AWS_REGION_NAME=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_CANOPY_WAVE_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_CANOPY_WAVE_API_KEY_FAST=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_CLINE_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_CLIPROXYAPI_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_DEEPSEEK_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_EXA_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_GITHUB_COPILOT_ACCESS_TOKEN_FILE=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_GITHUB_COPILOT_API_KEY_FILE=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_GITHUB_COPILOT_TOKEN_DIR=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_KILO_2_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_KILO_GATEWAY_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_LITELLM_MASTER_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_MY_REDIS_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_OMNIROUTE_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_OPENROUTER_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_STORE_MODEL_IN_DB=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_TZ=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_XIAOMI_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_CMD_0=REPLACE_WITH_PRIVATE_VALUE
++LITELLM_HC_0=REPLACE_WITH_PRIVATE_VALUE
++PROMETHEUS_CMD_0=REPLACE_WITH_PRIVATE_VALUE
++PROMETHEUS_CMD_1=REPLACE_WITH_PRIVATE_VALUE
++PROMETHEUS_CMD_2=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CMD_0=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CMD_1=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CMD_2=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CMD_3=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CMD_4=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/litellm/.gitignore b/01-traefik-apps/litellm/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/litellm/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/litellm/README.md b/01-traefik-apps/litellm/README.md
+new file mode 100644
+index 0000000..d2c83ce
+--- /dev/null
++++ b/01-traefik-apps/litellm/README.md
+@@ -0,0 +1,48 @@
++# Copia Alpine → Debian: litellm
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/litellm/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/litellm/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- adminer: http://127.0.0.1:18400/
++- litellm: http://127.0.0.1:18401/
++- prometheus: http://127.0.0.1:18402/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++Validación adicional: los dos directorios PostgreSQL antiguos se conservaron completos: 1686 y 1689 archivos SHA-256 idénticos. Prometheus se copió en caliente y arranca/responde, pero no es un snapshot transaccional de métricas.
++
++## Reverse proxy Debian
++
++Dominio: `https://llm.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/litellm.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-litellm-litellm:4000`.
++Sin middleware/etiquetas Sablier, igual que en Caddy origen: siempre activo.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve llm.joseluna.dev:443:10.0.0.6 https://llm.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/litellm/compose.migration.yaml b/01-traefik-apps/litellm/compose.migration.yaml
+new file mode 100644
+index 0000000..317cf58
+--- /dev/null
++++ b/01-traefik-apps/litellm/compose.migration.yaml
+@@ -0,0 +1,181 @@
++name: copy-litellm
++services:
++  adminer:
++    entrypoint: null
++    image: adminer@sha256:f742dcf1b6ca95733b54c4e020488ce78f3e774d73543a6ded9b4eaea8974f3d
++    container_name: copy-litellm-adminer
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - litellm-adminer-1
++        - adminer
++      proxy:
++        aliases:
++        - copy-litellm-adminer
++    labels:
++      traefik.enable: 'false'
++    ports:
++    - target: 8080
++      published: '18400'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  db:
++    entrypoint: null
++    image: postgres@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685
++    container_name: copy-litellm-db
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - litellm_db
++        - db
++    labels:
++      traefik.enable: 'false'
++    environment:
++      POSTGRES_DB: ${DB_POSTGRES_DB}
++      POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${DB_POSTGRES_USER}
++    healthcheck:
++      test:
++      - CMD-SHELL
++      - ${DB_HC_0}
++      timeout: 5s
++      interval: 2s
++      retries: 10
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/litellm/data/postgres_data-litellm
++      target: /var/lib/postgresql/data
++      read_only: false
++      bind:
++        create_host_path: false
++  litellm:
++    depends_on:
++      db:
++        condition: service_started
++        required: true
++    dns:
++    - 10.0.0.4
++    - 10.0.0.16
++    entrypoint: null
++    image: docker.litellm.ai/berriai/litellm@sha256:60947db020b57e204823d3fbc8bb295c85be890d7c9adcc77fb4f5fc2fe410b2
++    container_name: copy-litellm-litellm
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - litellm
++      proxy:
++        aliases:
++        - copy-litellm-litellm
++    labels:
++      traefik.enable: 'false'
++    environment:
++      AWS_BEARER_TOKEN_BEDROCK: ${LITELLM_AWS_BEARER_TOKEN_BEDROCK}
++      AWS_REGION_NAME: ${LITELLM_AWS_REGION_NAME}
++      CANOPY_WAVE_API_KEY: ${LITELLM_CANOPY_WAVE_API_KEY}
++      CANOPY_WAVE_API_KEY_FAST: ${LITELLM_CANOPY_WAVE_API_KEY_FAST}
++      CLINE_API_KEY: ${LITELLM_CLINE_API_KEY}
++      CLIPROXYAPI_API_KEY: ${LITELLM_CLIPROXYAPI_API_KEY}
++      DATABASE_URL: ${LITELLM_DATABASE_URL}
++      DEEPSEEK_API_KEY: ${LITELLM_DEEPSEEK_API_KEY}
++      EXA_API_KEY: ${LITELLM_EXA_API_KEY}
++      GITHUB_COPILOT_ACCESS_TOKEN_FILE: ${LITELLM_GITHUB_COPILOT_ACCESS_TOKEN_FILE}
++      GITHUB_COPILOT_API_KEY_FILE: ${LITELLM_GITHUB_COPILOT_API_KEY_FILE}
++      GITHUB_COPILOT_TOKEN_DIR: ${LITELLM_GITHUB_COPILOT_TOKEN_DIR}
++      KILO_2_API_KEY: ${LITELLM_KILO_2_API_KEY}
++      KILO_GATEWAY_API_KEY: ${LITELLM_KILO_GATEWAY_API_KEY}
++      LITELLM_MASTER_KEY: ${LITELLM_LITELLM_MASTER_KEY}
++      MY_REDIS_PASSWORD: ${LITELLM_MY_REDIS_PASSWORD}
++      OMNIROUTE_API_KEY: ${LITELLM_OMNIROUTE_API_KEY}
++      OPENROUTER_API_KEY: ${LITELLM_OPENROUTER_API_KEY}
++      POSTGRES_PASSWORD: ${LITELLM_POSTGRES_PASSWORD}
++      STORE_MODEL_IN_DB: ${LITELLM_STORE_MODEL_IN_DB}
++      TZ: ${LITELLM_TZ}
++      XIAOMI_API_KEY: ${LITELLM_XIAOMI_API_KEY}
++    command:
++    - ${LITELLM_CMD_0}
++    healthcheck:
++      test:
++      - CMD-SHELL
++      - ${LITELLM_HC_0}
++      timeout: 10s
++      interval: 30s
++      retries: 3
++      start_period: 40s
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/litellm/data/config.yaml
++      target: /app/config.yaml
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 4000
++      published: '18401'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  prometheus:
++    entrypoint: null
++    image: prom/prometheus@sha256:5ce7540c3c00ef4ab0c9d2c995c6a5b9c421f44b4a115d97a2c7af3b1c21cbb0
++    container_name: copy-litellm-prometheus
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - litellm-prometheus
++        - prometheus
++    labels:
++      traefik.enable: 'false'
++    command:
++    - ${PROMETHEUS_CMD_0}
++    - ${PROMETHEUS_CMD_1}
++    - ${PROMETHEUS_CMD_2}
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/litellm/data/prometheus.yml
++      target: /etc/prometheus/prometheus.yml
++      read_only: false
++      bind:
++        create_host_path: false
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/litellm/data/prometheus_data
++      target: /prometheus
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 9090
++      published: '18402'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  redis:
++    entrypoint: null
++    image: redis@sha256:becdda6c7f4b3fb42e42fd7f120bbf5c54c4caaaf16f26da24e4563d2c1f0576
++    container_name: copy-litellm-redis
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - redis
++        - litellm-redis-1
++    labels:
++      traefik.enable: 'false'
++    command:
++    - ${REDIS_CMD_0}
++    - ${REDIS_CMD_1}
++    - ${REDIS_CMD_2}
++    - ${REDIS_CMD_3}
++    - ${REDIS_CMD_4}
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/litellm/data/redis-persistent
++      target: /data
++      bind:
++        create_host_path: false
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy
+diff --git a/01-traefik-apps/noco_db/.env.example b/01-traefik-apps/noco_db/.env.example
+new file mode 100644
+index 0000000..7dc5300
+--- /dev/null
++++ b/01-traefik-apps/noco_db/.env.example
+@@ -0,0 +1,5 @@
++NOCODB_NC_DB=REPLACE_WITH_PRIVATE_VALUE
++ROOT_DB_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++ROOT_DB_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++ROOT_DB_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++ROOT_DB_HC_0=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/noco_db/.gitignore b/01-traefik-apps/noco_db/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/noco_db/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/noco_db/README.md b/01-traefik-apps/noco_db/README.md
+new file mode 100644
+index 0000000..e827881
+--- /dev/null
++++ b/01-traefik-apps/noco_db/README.md
+@@ -0,0 +1,44 @@
++# Copia Alpine → Debian: noco_db
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/noco_db/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/noco_db/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- nocodb: http://127.0.0.1:18470/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++## Reverse proxy Debian
++
++Dominio: `https://nocodb.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/noco_db.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-noco_db-nocodb:8080`.
++Sablier Debian: grupo exclusivo `copy-noco-db`, sesión `10m`, incluyendo dependencias del stack.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve nocodb.joseluna.dev:443:10.0.0.6 https://nocodb.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/noco_db/compose.migration.yaml b/01-traefik-apps/noco_db/compose.migration.yaml
+new file mode 100644
+index 0000000..e29af7d
+--- /dev/null
++++ b/01-traefik-apps/noco_db/compose.migration.yaml
+@@ -0,0 +1,77 @@
++name: copy-noco-db
++services:
++  nocodb:
++    depends_on:
++      root_db:
++        condition: service_healthy
++        required: true
++    entrypoint: null
++    image: nocodb/nocodb@sha256:fda75aeb8a450d9ab4abd273b501aa0c625fa92f93ad72b0e57839b3310afbe4
++    container_name: copy-noco_db-nocodb
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - nocodb
++        - noco-db
++      proxy:
++        aliases:
++        - copy-noco_db-nocodb
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-noco-db
++    environment:
++      NC_DB: ${NOCODB_NC_DB}
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/noco_db/data/nc_data
++      target: /usr/app/data
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 8080
++      published: '18470'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  root_db:
++    entrypoint: null
++    image: postgres@sha256:557fea37a744d5f4c8faab304b0a90858b53ab119735a88c131fd19dab802f36
++    container_name: copy-noco_db-root_db
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - noco_db-root_db-1
++        - root_db
++      proxy:
++        aliases:
++        - copy-noco_db-root_db
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-noco-db
++    environment:
++      POSTGRES_DB: ${ROOT_DB_POSTGRES_DB}
++      POSTGRES_PASSWORD: ${ROOT_DB_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${ROOT_DB_POSTGRES_USER}
++    healthcheck:
++      test:
++      - CMD-SHELL
++      - ${ROOT_DB_HC_0}
++      timeout: 2s
++      interval: 10s
++      retries: 10
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/noco_db/data/db_data
++      target: /var/lib/postgresql/data
++      read_only: false
++      bind:
++        create_host_path: false
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy
+diff --git a/01-traefik-apps/outline/.env.example b/01-traefik-apps/outline/.env.example
+new file mode 100644
+index 0000000..8653ee5
+--- /dev/null
++++ b/01-traefik-apps/outline/.env.example
+@@ -0,0 +1,261 @@
++OUTLINE_AWS_ACCESS_KEY_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AWS_REGION=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AWS_S3_ACCELERATE_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AWS_S3_ACL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AWS_S3_FORCE_PATH_STYLE=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AWS_S3_UPLOAD_BUCKET_NAME=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AWS_S3_UPLOAD_BUCKET_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AWS_SECRET_ACCESS_KEY=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AZURE_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AZURE_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_AZURE_RESOURCE_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_CDN_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_COLLABORATION_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DATABASE_CONNECTION_POOL_MAX=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DATABASE_CONNECTION_POOL_MIN=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DEBUG=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DEFAULT_LANGUAGE=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DISCORD_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DISCORD_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DISCORD_SERVER_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DISCORD_SERVER_ROLES=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_DROPBOX_APP_KEY=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_ENABLE_UPDATES=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FIGMA_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FIGMA_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FILE_STORAGE=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FILE_STORAGE_IMPORT_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FILE_STORAGE_LOCAL_ROOT_DIR=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FILE_STORAGE_UPLOAD_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_FORCE_HTTPS=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GITHUB_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GITHUB_APP_NAME=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GITHUB_APP_PRIVATE_KEY=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GITHUB_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GITHUB_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GITHUB_WEBHOOK_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GOOGLE_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_GOOGLE_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_IFRAMELY_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_IFRAMELY_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_LINEAR_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_LINEAR_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_LOG_LEVEL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_NODE_ENV=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_NOTION_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_NOTION_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_AUTH_URI=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_DISPLAY_NAME=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_LOGOUT_URI=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_SCOPES=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_TOKEN_URI=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_USERINFO_URI=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_OIDC_USERNAME_CLAIM=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_PGSSLMODE=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_PORT=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_RATE_LIMITER_DURATION_WINDOW=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_RATE_LIMITER_ENABLED=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_RATE_LIMITER_REQUESTS=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_REDIS_COLLABORATION_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_REDIS_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SECRET_KEY=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SENTRY_DSN=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SENTRY_TUNNEL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SLACK_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SLACK_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SLACK_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SLACK_MESSAGE_ACTIONS=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SLACK_VERIFICATION_TOKEN=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SMTP_FROM_EMAIL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SMTP_HOST=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SMTP_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SMTP_PORT=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SMTP_REPLY_EMAIL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SMTP_USERNAME=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SSL_CERT=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_SSL_KEY=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_URL=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_UTILS_SECRET=REPLACE_WITH_PRIVATE_VALUE
++OUTLINE_WEB_CONCURRENCY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_ACCESS_KEY_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_REGION=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_S3_ACCELERATE_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_S3_ACL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_S3_FORCE_PATH_STYLE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_S3_UPLOAD_BUCKET_NAME=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_S3_UPLOAD_BUCKET_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AWS_SECRET_ACCESS_KEY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AZURE_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AZURE_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_AZURE_RESOURCE_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_CDN_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_COLLABORATION_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DATABASE_CONNECTION_POOL_MAX=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DATABASE_CONNECTION_POOL_MIN=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DEBUG=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DEFAULT_LANGUAGE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DISCORD_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DISCORD_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DISCORD_SERVER_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DISCORD_SERVER_ROLES=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_DROPBOX_APP_KEY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_ENABLE_UPDATES=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FIGMA_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FIGMA_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FILE_STORAGE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FILE_STORAGE_IMPORT_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FILE_STORAGE_LOCAL_ROOT_DIR=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FILE_STORAGE_UPLOAD_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_FORCE_HTTPS=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GITHUB_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GITHUB_APP_NAME=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GITHUB_APP_PRIVATE_KEY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GITHUB_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GITHUB_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GITHUB_WEBHOOK_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GOOGLE_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_GOOGLE_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_IFRAMELY_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_IFRAMELY_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_LINEAR_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_LINEAR_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_LOG_LEVEL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_NODE_ENV=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_NOTION_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_NOTION_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_AUTH_URI=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_DISPLAY_NAME=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_LOGOUT_URI=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_SCOPES=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_TOKEN_URI=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_USERINFO_URI=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_OIDC_USERNAME_CLAIM=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_PGSSLMODE=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_PORT=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_DB=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_POSTGRES_USER=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_RATE_LIMITER_DURATION_WINDOW=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_RATE_LIMITER_ENABLED=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_RATE_LIMITER_REQUESTS=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_REDIS_COLLABORATION_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_REDIS_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SECRET_KEY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SENTRY_DSN=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SENTRY_TUNNEL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SLACK_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SLACK_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SLACK_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SLACK_MESSAGE_ACTIONS=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SLACK_VERIFICATION_TOKEN=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_FROM_EMAIL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_HOST=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_PORT=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_REPLY_EMAIL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SMTP_USERNAME=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SSL_CERT=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_SSL_KEY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_URL=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_UTILS_SECRET=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_WEB_CONCURRENCY=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_0=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_1=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_2=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_3=REPLACE_WITH_PRIVATE_VALUE
++POSTGRES_HC_4=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_ACCESS_KEY_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_REGION=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_S3_ACCELERATE_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_S3_ACL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_S3_FORCE_PATH_STYLE=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_S3_UPLOAD_BUCKET_NAME=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_S3_UPLOAD_BUCKET_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AWS_SECRET_ACCESS_KEY=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AZURE_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AZURE_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_AZURE_RESOURCE_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CDN_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_COLLABORATION_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DATABASE_CONNECTION_POOL_MAX=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DATABASE_CONNECTION_POOL_MIN=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DATABASE_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DEBUG=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DEFAULT_LANGUAGE=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DISCORD_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DISCORD_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DISCORD_SERVER_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DISCORD_SERVER_ROLES=REPLACE_WITH_PRIVATE_VALUE
++REDIS_DROPBOX_APP_KEY=REPLACE_WITH_PRIVATE_VALUE
++REDIS_ENABLE_UPDATES=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FIGMA_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FIGMA_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FILE_STORAGE=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FILE_STORAGE_IMPORT_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FILE_STORAGE_LOCAL_ROOT_DIR=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FILE_STORAGE_UPLOAD_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE=REPLACE_WITH_PRIVATE_VALUE
++REDIS_FORCE_HTTPS=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GITHUB_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GITHUB_APP_NAME=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GITHUB_APP_PRIVATE_KEY=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GITHUB_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GITHUB_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GITHUB_WEBHOOK_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GOOGLE_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_GOOGLE_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_IFRAMELY_API_KEY=REPLACE_WITH_PRIVATE_VALUE
++REDIS_IFRAMELY_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_LINEAR_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_LINEAR_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_LOG_LEVEL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_NODE_ENV=REPLACE_WITH_PRIVATE_VALUE
++REDIS_NOTION_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_NOTION_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_AUTH_URI=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_DISPLAY_NAME=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_LOGOUT_URI=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_SCOPES=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_TOKEN_URI=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_USERINFO_URI=REPLACE_WITH_PRIVATE_VALUE
++REDIS_OIDC_USERNAME_CLAIM=REPLACE_WITH_PRIVATE_VALUE
++REDIS_PGSSLMODE=REPLACE_WITH_PRIVATE_VALUE
++REDIS_PORT=REPLACE_WITH_PRIVATE_VALUE
++REDIS_RATE_LIMITER_DURATION_WINDOW=REPLACE_WITH_PRIVATE_VALUE
++REDIS_RATE_LIMITER_ENABLED=REPLACE_WITH_PRIVATE_VALUE
++REDIS_RATE_LIMITER_REQUESTS=REPLACE_WITH_PRIVATE_VALUE
++REDIS_REDIS_COLLABORATION_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_REDIS_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SECRET_KEY=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SENTRY_DSN=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SENTRY_TUNNEL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SLACK_APP_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SLACK_CLIENT_ID=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SLACK_CLIENT_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SLACK_MESSAGE_ACTIONS=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SLACK_VERIFICATION_TOKEN=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SMTP_FROM_EMAIL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SMTP_HOST=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SMTP_PASSWORD=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SMTP_PORT=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SMTP_REPLY_EMAIL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SMTP_USERNAME=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SSL_CERT=REPLACE_WITH_PRIVATE_VALUE
++REDIS_SSL_KEY=REPLACE_WITH_PRIVATE_VALUE
++REDIS_URL=REPLACE_WITH_PRIVATE_VALUE
++REDIS_UTILS_SECRET=REPLACE_WITH_PRIVATE_VALUE
++REDIS_WEB_CONCURRENCY=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CMD_0=REPLACE_WITH_PRIVATE_VALUE
++REDIS_CMD_1=REPLACE_WITH_PRIVATE_VALUE
++REDIS_HC_0=REPLACE_WITH_PRIVATE_VALUE
++REDIS_HC_1=REPLACE_WITH_PRIVATE_VALUE
+diff --git a/01-traefik-apps/outline/.gitignore b/01-traefik-apps/outline/.gitignore
+new file mode 100644
+index 0000000..8fe39b7
+--- /dev/null
++++ b/01-traefik-apps/outline/.gitignore
+@@ -0,0 +1,3 @@
++!.gitignore
++!.env.example
++.env
+diff --git a/01-traefik-apps/outline/README.md b/01-traefik-apps/outline/README.md
+new file mode 100644
+index 0000000..4e3ced4
+--- /dev/null
++++ b/01-traefik-apps/outline/README.md
+@@ -0,0 +1,44 @@
++# Copia Alpine → Debian: outline
++
++Datos privados: `/mnt/media/alpine-app-copies-20261026/outline/data` (HDD `/mnt/media`).
++Backups: `/mnt/media/alpine-app-copies-20261026/outline/backups`. Entorno: `.env`, modo 0600, ignorado.
++Compose: `docker compose -f compose.migration.yaml up -d`.
++No usar el compose legado sin `-f`; no mezclar ambos proyectos.
++
++Imágenes fijadas al digest del contenedor realmente desplegado en Alpine; sin upgrade.
++Red interna propia por proyecto; servicios web en red existente `proxy`, pero
++`traefik.enable=false` (routers explícitos del file provider). Se conservan los
++puertos de prueba en 127.0.0.1. Rutas HTTPS en Traefik de Debian, sin cambio de DNS,
++Newt, URLs públicas ni del host Alpine.
++
++Servicios de prueba:
++- outline: http://127.0.0.1:18460/
++
++Las URLs públicas originales se conservaron: redirects, OAuth, callbacks y enlaces
++pueden regresar a Alpine. No se ha efectuado corte ni prueba autenticada de usuario.
++No se probaron escrituras/borrados S3 ni cambios en buckets; se conservaron sus
++credenciales/configuración. La copia puede quedar desactualizada mientras Alpine
++sigue recibiendo escrituras. Antes del corte se requiere sincronización final
++coordinada y comprobación de autenticación/adjuntos con el usuario.
++
++PostgreSQL activo: dump consistente/restauración (LiteLLM y Blinko), no copia de
++PGDATA activo. PostgreSQL detenido: copia física preservando permisos/propietarios.
++Blinko: adjuntos verificados por SHA-256 y recuentos por tabla comparados.
++Excalidash: backup SQLite online con better-sqlite3 e integrity_check=ok.
++Redis sin bind en origen: se preservó /data; LiteLLM por RDB online, AFFiNE y
++Outline por copia del contenedor detenido. Datos Redis ahora persistentes en HDD.
++Copias antiguas de LiteLLM conservadas sin montarlas.
++
++Fallo previo conocido: Excalidash /health responde 302 en ambos hosts y el
++healthcheck espera 200; por ello el backend aparece unhealthy, no es regresión.
++El job AFFiNE termina con código 0 y restart=no (no es un daemon).
++
++No ejecutar down -v ni eliminar datos del origen. No commit/push realizado.
++
++## Reverse proxy Debian
++
++Dominio: `https://outline.joseluna.dev`. Archivo: `00-proxies/traefik/dynamic/outline.yml`.
++EntryPoint `https`, TLS resolver `cloudflare`; backend `http://copy-outline-outline:3000`.
++Sablier Debian: grupo exclusivo `copy-outline`, sesión `1h`, incluyendo dependencias del stack.
++Prueba sin cambiar DNS ni seguir redirects: `curl --resolve outline.joseluna.dev:443:10.0.0.6 https://outline.joseluna.dev/`.
++Un redirect no demuestra login ni callbacks: no se ha validado autenticación ni escrituras externas.
+diff --git a/01-traefik-apps/outline/compose.migration.yaml b/01-traefik-apps/outline/compose.migration.yaml
+new file mode 100644
+index 0000000..cacee02
+--- /dev/null
++++ b/01-traefik-apps/outline/compose.migration.yaml
+@@ -0,0 +1,367 @@
++name: copy-outline
++services:
++  outline:
++    depends_on:
++      postgres:
++        condition: service_started
++        required: true
++      redis:
++        condition: service_started
++        required: true
++    entrypoint: null
++    image: docker.getoutline.com/outlinewiki/outline@sha256:832051f039b446c87aa23929cf92c00980c66aaa2d744d118c48c016ec816ad8
++    container_name: copy-outline-outline
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - outline
++        - outline-outline-1
++      proxy:
++        aliases:
++        - copy-outline-outline
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-outline
++    environment:
++      AWS_ACCESS_KEY_ID: ${OUTLINE_AWS_ACCESS_KEY_ID}
++      AWS_REGION: ${OUTLINE_AWS_REGION}
++      AWS_S3_ACCELERATE_URL: ${OUTLINE_AWS_S3_ACCELERATE_URL}
++      AWS_S3_ACL: ${OUTLINE_AWS_S3_ACL}
++      AWS_S3_FORCE_PATH_STYLE: ${OUTLINE_AWS_S3_FORCE_PATH_STYLE}
++      AWS_S3_UPLOAD_BUCKET_NAME: ${OUTLINE_AWS_S3_UPLOAD_BUCKET_NAME}
++      AWS_S3_UPLOAD_BUCKET_URL: ${OUTLINE_AWS_S3_UPLOAD_BUCKET_URL}
++      AWS_SECRET_ACCESS_KEY: ${OUTLINE_AWS_SECRET_ACCESS_KEY}
++      AZURE_CLIENT_ID: ${OUTLINE_AZURE_CLIENT_ID}
++      AZURE_CLIENT_SECRET: ${OUTLINE_AZURE_CLIENT_SECRET}
++      AZURE_RESOURCE_APP_ID: ${OUTLINE_AZURE_RESOURCE_APP_ID}
++      CDN_URL: ${OUTLINE_CDN_URL}
++      COLLABORATION_URL: ${OUTLINE_COLLABORATION_URL}
++      DATABASE_CONNECTION_POOL_MAX: ${OUTLINE_DATABASE_CONNECTION_POOL_MAX}
++      DATABASE_CONNECTION_POOL_MIN: ${OUTLINE_DATABASE_CONNECTION_POOL_MIN}
++      DATABASE_URL: ${OUTLINE_DATABASE_URL}
++      DEBUG: ${OUTLINE_DEBUG}
++      DEFAULT_LANGUAGE: ${OUTLINE_DEFAULT_LANGUAGE}
++      DISCORD_CLIENT_ID: ${OUTLINE_DISCORD_CLIENT_ID}
++      DISCORD_CLIENT_SECRET: ${OUTLINE_DISCORD_CLIENT_SECRET}
++      DISCORD_SERVER_ID: ${OUTLINE_DISCORD_SERVER_ID}
++      DISCORD_SERVER_ROLES: ${OUTLINE_DISCORD_SERVER_ROLES}
++      DROPBOX_APP_KEY: ${OUTLINE_DROPBOX_APP_KEY}
++      ENABLE_UPDATES: ${OUTLINE_ENABLE_UPDATES}
++      FIGMA_CLIENT_ID: ${OUTLINE_FIGMA_CLIENT_ID}
++      FIGMA_CLIENT_SECRET: ${OUTLINE_FIGMA_CLIENT_SECRET}
++      FILE_STORAGE: ${OUTLINE_FILE_STORAGE}
++      FILE_STORAGE_IMPORT_MAX_SIZE: ${OUTLINE_FILE_STORAGE_IMPORT_MAX_SIZE}
++      FILE_STORAGE_LOCAL_ROOT_DIR: ${OUTLINE_FILE_STORAGE_LOCAL_ROOT_DIR}
++      FILE_STORAGE_UPLOAD_MAX_SIZE: ${OUTLINE_FILE_STORAGE_UPLOAD_MAX_SIZE}
++      FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE: ${OUTLINE_FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE}
++      FORCE_HTTPS: ${OUTLINE_FORCE_HTTPS}
++      GITHUB_APP_ID: ${OUTLINE_GITHUB_APP_ID}
++      GITHUB_APP_NAME: ${OUTLINE_GITHUB_APP_NAME}
++      GITHUB_APP_PRIVATE_KEY: ${OUTLINE_GITHUB_APP_PRIVATE_KEY}
++      GITHUB_CLIENT_ID: ${OUTLINE_GITHUB_CLIENT_ID}
++      GITHUB_CLIENT_SECRET: ${OUTLINE_GITHUB_CLIENT_SECRET}
++      GITHUB_WEBHOOK_SECRET: ${OUTLINE_GITHUB_WEBHOOK_SECRET}
++      GOOGLE_CLIENT_ID: ${OUTLINE_GOOGLE_CLIENT_ID}
++      GOOGLE_CLIENT_SECRET: ${OUTLINE_GOOGLE_CLIENT_SECRET}
++      IFRAMELY_API_KEY: ${OUTLINE_IFRAMELY_API_KEY}
++      IFRAMELY_URL: ${OUTLINE_IFRAMELY_URL}
++      LINEAR_CLIENT_ID: ${OUTLINE_LINEAR_CLIENT_ID}
++      LINEAR_CLIENT_SECRET: ${OUTLINE_LINEAR_CLIENT_SECRET}
++      LOG_LEVEL: ${OUTLINE_LOG_LEVEL}
++      NODE_ENV: ${OUTLINE_NODE_ENV}
++      NOTION_CLIENT_ID: ${OUTLINE_NOTION_CLIENT_ID}
++      NOTION_CLIENT_SECRET: ${OUTLINE_NOTION_CLIENT_SECRET}
++      OIDC_AUTH_URI: ${OUTLINE_OIDC_AUTH_URI}
++      OIDC_CLIENT_ID: ${OUTLINE_OIDC_CLIENT_ID}
++      OIDC_CLIENT_SECRET: ${OUTLINE_OIDC_CLIENT_SECRET}
++      OIDC_DISPLAY_NAME: ${OUTLINE_OIDC_DISPLAY_NAME}
++      OIDC_LOGOUT_URI: ${OUTLINE_OIDC_LOGOUT_URI}
++      OIDC_SCOPES: ${OUTLINE_OIDC_SCOPES}
++      OIDC_TOKEN_URI: ${OUTLINE_OIDC_TOKEN_URI}
++      OIDC_USERINFO_URI: ${OUTLINE_OIDC_USERINFO_URI}
++      OIDC_USERNAME_CLAIM: ${OUTLINE_OIDC_USERNAME_CLAIM}
++      PGSSLMODE: ${OUTLINE_PGSSLMODE}
++      PORT: ${OUTLINE_PORT}
++      RATE_LIMITER_DURATION_WINDOW: ${OUTLINE_RATE_LIMITER_DURATION_WINDOW}
++      RATE_LIMITER_ENABLED: ${OUTLINE_RATE_LIMITER_ENABLED}
++      RATE_LIMITER_REQUESTS: ${OUTLINE_RATE_LIMITER_REQUESTS}
++      REDIS_COLLABORATION_URL: ${OUTLINE_REDIS_COLLABORATION_URL}
++      REDIS_URL: ${OUTLINE_REDIS_URL}
++      SECRET_KEY: ${OUTLINE_SECRET_KEY}
++      SENTRY_DSN: ${OUTLINE_SENTRY_DSN}
++      SENTRY_TUNNEL: ${OUTLINE_SENTRY_TUNNEL}
++      SLACK_APP_ID: ${OUTLINE_SLACK_APP_ID}
++      SLACK_CLIENT_ID: ${OUTLINE_SLACK_CLIENT_ID}
++      SLACK_CLIENT_SECRET: ${OUTLINE_SLACK_CLIENT_SECRET}
++      SLACK_MESSAGE_ACTIONS: ${OUTLINE_SLACK_MESSAGE_ACTIONS}
++      SLACK_VERIFICATION_TOKEN: ${OUTLINE_SLACK_VERIFICATION_TOKEN}
++      SMTP_FROM_EMAIL: ${OUTLINE_SMTP_FROM_EMAIL}
++      SMTP_HOST: ${OUTLINE_SMTP_HOST}
++      SMTP_PASSWORD: ${OUTLINE_SMTP_PASSWORD}
++      SMTP_PORT: ${OUTLINE_SMTP_PORT}
++      SMTP_REPLY_EMAIL: ${OUTLINE_SMTP_REPLY_EMAIL}
++      SMTP_USERNAME: ${OUTLINE_SMTP_USERNAME}
++      SSL_CERT: ${OUTLINE_SSL_CERT}
++      SSL_KEY: ${OUTLINE_SSL_KEY}
++      URL: ${OUTLINE_URL}
++      UTILS_SECRET: ${OUTLINE_UTILS_SECRET}
++      WEB_CONCURRENCY: ${OUTLINE_WEB_CONCURRENCY}
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/outline/data/outline-data
++      target: /var/lib/outline/data
++      read_only: false
++      bind:
++        create_host_path: false
++    ports:
++    - target: 3000
++      published: '18460'
++      host_ip: 127.0.0.1
++      protocol: tcp
++  postgres:
++    entrypoint: null
++    image: postgres@sha256:a9abf4275f9e99bff8e6aed712b3b7dfec9cac1341bba01c1ffdfce9ff9fc34a
++    container_name: copy-outline-postgres
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - outline-postgres-1
++        - postgres
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-outline
++    environment:
++      AWS_ACCESS_KEY_ID: ${POSTGRES_AWS_ACCESS_KEY_ID}
++      AWS_REGION: ${POSTGRES_AWS_REGION}
++      AWS_S3_ACCELERATE_URL: ${POSTGRES_AWS_S3_ACCELERATE_URL}
++      AWS_S3_ACL: ${POSTGRES_AWS_S3_ACL}
++      AWS_S3_FORCE_PATH_STYLE: ${POSTGRES_AWS_S3_FORCE_PATH_STYLE}
++      AWS_S3_UPLOAD_BUCKET_NAME: ${POSTGRES_AWS_S3_UPLOAD_BUCKET_NAME}
++      AWS_S3_UPLOAD_BUCKET_URL: ${POSTGRES_AWS_S3_UPLOAD_BUCKET_URL}
++      AWS_SECRET_ACCESS_KEY: ${POSTGRES_AWS_SECRET_ACCESS_KEY}
++      AZURE_CLIENT_ID: ${POSTGRES_AZURE_CLIENT_ID}
++      AZURE_CLIENT_SECRET: ${POSTGRES_AZURE_CLIENT_SECRET}
++      AZURE_RESOURCE_APP_ID: ${POSTGRES_AZURE_RESOURCE_APP_ID}
++      CDN_URL: ${POSTGRES_CDN_URL}
++      COLLABORATION_URL: ${POSTGRES_COLLABORATION_URL}
++      DATABASE_CONNECTION_POOL_MAX: ${POSTGRES_DATABASE_CONNECTION_POOL_MAX}
++      DATABASE_CONNECTION_POOL_MIN: ${POSTGRES_DATABASE_CONNECTION_POOL_MIN}
++      DATABASE_URL: ${POSTGRES_DATABASE_URL}
++      DEBUG: ${POSTGRES_DEBUG}
++      DEFAULT_LANGUAGE: ${POSTGRES_DEFAULT_LANGUAGE}
++      DISCORD_CLIENT_ID: ${POSTGRES_DISCORD_CLIENT_ID}
++      DISCORD_CLIENT_SECRET: ${POSTGRES_DISCORD_CLIENT_SECRET}
++      DISCORD_SERVER_ID: ${POSTGRES_DISCORD_SERVER_ID}
++      DISCORD_SERVER_ROLES: ${POSTGRES_DISCORD_SERVER_ROLES}
++      DROPBOX_APP_KEY: ${POSTGRES_DROPBOX_APP_KEY}
++      ENABLE_UPDATES: ${POSTGRES_ENABLE_UPDATES}
++      FIGMA_CLIENT_ID: ${POSTGRES_FIGMA_CLIENT_ID}
++      FIGMA_CLIENT_SECRET: ${POSTGRES_FIGMA_CLIENT_SECRET}
++      FILE_STORAGE: ${POSTGRES_FILE_STORAGE}
++      FILE_STORAGE_IMPORT_MAX_SIZE: ${POSTGRES_FILE_STORAGE_IMPORT_MAX_SIZE}
++      FILE_STORAGE_LOCAL_ROOT_DIR: ${POSTGRES_FILE_STORAGE_LOCAL_ROOT_DIR}
++      FILE_STORAGE_UPLOAD_MAX_SIZE: ${POSTGRES_FILE_STORAGE_UPLOAD_MAX_SIZE}
++      FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE: ${POSTGRES_FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE}
++      FORCE_HTTPS: ${POSTGRES_FORCE_HTTPS}
++      GITHUB_APP_ID: ${POSTGRES_GITHUB_APP_ID}
++      GITHUB_APP_NAME: ${POSTGRES_GITHUB_APP_NAME}
++      GITHUB_APP_PRIVATE_KEY: ${POSTGRES_GITHUB_APP_PRIVATE_KEY}
++      GITHUB_CLIENT_ID: ${POSTGRES_GITHUB_CLIENT_ID}
++      GITHUB_CLIENT_SECRET: ${POSTGRES_GITHUB_CLIENT_SECRET}
++      GITHUB_WEBHOOK_SECRET: ${POSTGRES_GITHUB_WEBHOOK_SECRET}
++      GOOGLE_CLIENT_ID: ${POSTGRES_GOOGLE_CLIENT_ID}
++      GOOGLE_CLIENT_SECRET: ${POSTGRES_GOOGLE_CLIENT_SECRET}
++      IFRAMELY_API_KEY: ${POSTGRES_IFRAMELY_API_KEY}
++      IFRAMELY_URL: ${POSTGRES_IFRAMELY_URL}
++      LINEAR_CLIENT_ID: ${POSTGRES_LINEAR_CLIENT_ID}
++      LINEAR_CLIENT_SECRET: ${POSTGRES_LINEAR_CLIENT_SECRET}
++      LOG_LEVEL: ${POSTGRES_LOG_LEVEL}
++      NODE_ENV: ${POSTGRES_NODE_ENV}
++      NOTION_CLIENT_ID: ${POSTGRES_NOTION_CLIENT_ID}
++      NOTION_CLIENT_SECRET: ${POSTGRES_NOTION_CLIENT_SECRET}
++      OIDC_AUTH_URI: ${POSTGRES_OIDC_AUTH_URI}
++      OIDC_CLIENT_ID: ${POSTGRES_OIDC_CLIENT_ID}
++      OIDC_CLIENT_SECRET: ${POSTGRES_OIDC_CLIENT_SECRET}
++      OIDC_DISPLAY_NAME: ${POSTGRES_OIDC_DISPLAY_NAME}
++      OIDC_LOGOUT_URI: ${POSTGRES_OIDC_LOGOUT_URI}
++      OIDC_SCOPES: ${POSTGRES_OIDC_SCOPES}
++      OIDC_TOKEN_URI: ${POSTGRES_OIDC_TOKEN_URI}
++      OIDC_USERINFO_URI: ${POSTGRES_OIDC_USERINFO_URI}
++      OIDC_USERNAME_CLAIM: ${POSTGRES_OIDC_USERNAME_CLAIM}
++      PGSSLMODE: ${POSTGRES_PGSSLMODE}
++      PORT: ${POSTGRES_PORT}
++      POSTGRES_DB: ${POSTGRES_POSTGRES_DB}
++      POSTGRES_PASSWORD: ${POSTGRES_POSTGRES_PASSWORD}
++      POSTGRES_USER: ${POSTGRES_POSTGRES_USER}
++      RATE_LIMITER_DURATION_WINDOW: ${POSTGRES_RATE_LIMITER_DURATION_WINDOW}
++      RATE_LIMITER_ENABLED: ${POSTGRES_RATE_LIMITER_ENABLED}
++      RATE_LIMITER_REQUESTS: ${POSTGRES_RATE_LIMITER_REQUESTS}
++      REDIS_COLLABORATION_URL: ${POSTGRES_REDIS_COLLABORATION_URL}
++      REDIS_URL: ${POSTGRES_REDIS_URL}
++      SECRET_KEY: ${POSTGRES_SECRET_KEY}
++      SENTRY_DSN: ${POSTGRES_SENTRY_DSN}
++      SENTRY_TUNNEL: ${POSTGRES_SENTRY_TUNNEL}
++      SLACK_APP_ID: ${POSTGRES_SLACK_APP_ID}
++      SLACK_CLIENT_ID: ${POSTGRES_SLACK_CLIENT_ID}
++      SLACK_CLIENT_SECRET: ${POSTGRES_SLACK_CLIENT_SECRET}
++      SLACK_MESSAGE_ACTIONS: ${POSTGRES_SLACK_MESSAGE_ACTIONS}
++      SLACK_VERIFICATION_TOKEN: ${POSTGRES_SLACK_VERIFICATION_TOKEN}
++      SMTP_FROM_EMAIL: ${POSTGRES_SMTP_FROM_EMAIL}
++      SMTP_HOST: ${POSTGRES_SMTP_HOST}
++      SMTP_PASSWORD: ${POSTGRES_SMTP_PASSWORD}
++      SMTP_PORT: ${POSTGRES_SMTP_PORT}
++      SMTP_REPLY_EMAIL: ${POSTGRES_SMTP_REPLY_EMAIL}
++      SMTP_USERNAME: ${POSTGRES_SMTP_USERNAME}
++      SSL_CERT: ${POSTGRES_SSL_CERT}
++      SSL_KEY: ${POSTGRES_SSL_KEY}
++      URL: ${POSTGRES_URL}
++      UTILS_SECRET: ${POSTGRES_UTILS_SECRET}
++      WEB_CONCURRENCY: ${POSTGRES_WEB_CONCURRENCY}
++    healthcheck:
++      test:
++      - CMD
++      - ${POSTGRES_HC_0}
++      - ${POSTGRES_HC_1}
++      - ${POSTGRES_HC_2}
++      - ${POSTGRES_HC_3}
++      - ${POSTGRES_HC_4}
++      timeout: 20s
++      interval: 30s
++      retries: 3
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/outline/data/postgres-data
++      target: /var/lib/postgresql
++      read_only: false
++      bind:
++        create_host_path: false
++  redis:
++    entrypoint: null
++    image: redis@sha256:d372cf7cd5ab47fb6ad1a73c45ea1104d6f3fa11cc833ff0b3ac997890b4ccec
++    container_name: copy-outline-redis
++    restart: unless-stopped
++    networks:
++      private:
++        aliases:
++        - redis
++        - outline-redis-1
++    labels:
++      traefik.enable: 'false'
++      sablier.enable: 'true'
++      sablier.group: copy-outline
++    environment:
++      AWS_ACCESS_KEY_ID: ${REDIS_AWS_ACCESS_KEY_ID}
++      AWS_REGION: ${REDIS_AWS_REGION}
++      AWS_S3_ACCELERATE_URL: ${REDIS_AWS_S3_ACCELERATE_URL}
++      AWS_S3_ACL: ${REDIS_AWS_S3_ACL}
++      AWS_S3_FORCE_PATH_STYLE: ${REDIS_AWS_S3_FORCE_PATH_STYLE}
++      AWS_S3_UPLOAD_BUCKET_NAME: ${REDIS_AWS_S3_UPLOAD_BUCKET_NAME}
++      AWS_S3_UPLOAD_BUCKET_URL: ${REDIS_AWS_S3_UPLOAD_BUCKET_URL}
++      AWS_SECRET_ACCESS_KEY: ${REDIS_AWS_SECRET_ACCESS_KEY}
++      AZURE_CLIENT_ID: ${REDIS_AZURE_CLIENT_ID}
++      AZURE_CLIENT_SECRET: ${REDIS_AZURE_CLIENT_SECRET}
++      AZURE_RESOURCE_APP_ID: ${REDIS_AZURE_RESOURCE_APP_ID}
++      CDN_URL: ${REDIS_CDN_URL}
++      COLLABORATION_URL: ${REDIS_COLLABORATION_URL}
++      DATABASE_CONNECTION_POOL_MAX: ${REDIS_DATABASE_CONNECTION_POOL_MAX}
++      DATABASE_CONNECTION_POOL_MIN: ${REDIS_DATABASE_CONNECTION_POOL_MIN}
++      DATABASE_URL: ${REDIS_DATABASE_URL}
++      DEBUG: ${REDIS_DEBUG}
++      DEFAULT_LANGUAGE: ${REDIS_DEFAULT_LANGUAGE}
++      DISCORD_CLIENT_ID: ${REDIS_DISCORD_CLIENT_ID}
++      DISCORD_CLIENT_SECRET: ${REDIS_DISCORD_CLIENT_SECRET}
++      DISCORD_SERVER_ID: ${REDIS_DISCORD_SERVER_ID}
++      DISCORD_SERVER_ROLES: ${REDIS_DISCORD_SERVER_ROLES}
++      DROPBOX_APP_KEY: ${REDIS_DROPBOX_APP_KEY}
++      ENABLE_UPDATES: ${REDIS_ENABLE_UPDATES}
++      FIGMA_CLIENT_ID: ${REDIS_FIGMA_CLIENT_ID}
++      FIGMA_CLIENT_SECRET: ${REDIS_FIGMA_CLIENT_SECRET}
++      FILE_STORAGE: ${REDIS_FILE_STORAGE}
++      FILE_STORAGE_IMPORT_MAX_SIZE: ${REDIS_FILE_STORAGE_IMPORT_MAX_SIZE}
++      FILE_STORAGE_LOCAL_ROOT_DIR: ${REDIS_FILE_STORAGE_LOCAL_ROOT_DIR}
++      FILE_STORAGE_UPLOAD_MAX_SIZE: ${REDIS_FILE_STORAGE_UPLOAD_MAX_SIZE}
++      FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE: ${REDIS_FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE}
++      FORCE_HTTPS: ${REDIS_FORCE_HTTPS}
++      GITHUB_APP_ID: ${REDIS_GITHUB_APP_ID}
++      GITHUB_APP_NAME: ${REDIS_GITHUB_APP_NAME}
++      GITHUB_APP_PRIVATE_KEY: ${REDIS_GITHUB_APP_PRIVATE_KEY}
++      GITHUB_CLIENT_ID: ${REDIS_GITHUB_CLIENT_ID}
++      GITHUB_CLIENT_SECRET: ${REDIS_GITHUB_CLIENT_SECRET}
++      GITHUB_WEBHOOK_SECRET: ${REDIS_GITHUB_WEBHOOK_SECRET}
++      GOOGLE_CLIENT_ID: ${REDIS_GOOGLE_CLIENT_ID}
++      GOOGLE_CLIENT_SECRET: ${REDIS_GOOGLE_CLIENT_SECRET}
++      IFRAMELY_API_KEY: ${REDIS_IFRAMELY_API_KEY}
++      IFRAMELY_URL: ${REDIS_IFRAMELY_URL}
++      LINEAR_CLIENT_ID: ${REDIS_LINEAR_CLIENT_ID}
++      LINEAR_CLIENT_SECRET: ${REDIS_LINEAR_CLIENT_SECRET}
++      LOG_LEVEL: ${REDIS_LOG_LEVEL}
++      NODE_ENV: ${REDIS_NODE_ENV}
++      NOTION_CLIENT_ID: ${REDIS_NOTION_CLIENT_ID}
++      NOTION_CLIENT_SECRET: ${REDIS_NOTION_CLIENT_SECRET}
++      OIDC_AUTH_URI: ${REDIS_OIDC_AUTH_URI}
++      OIDC_CLIENT_ID: ${REDIS_OIDC_CLIENT_ID}
++      OIDC_CLIENT_SECRET: ${REDIS_OIDC_CLIENT_SECRET}
++      OIDC_DISPLAY_NAME: ${REDIS_OIDC_DISPLAY_NAME}
++      OIDC_LOGOUT_URI: ${REDIS_OIDC_LOGOUT_URI}
++      OIDC_SCOPES: ${REDIS_OIDC_SCOPES}
++      OIDC_TOKEN_URI: ${REDIS_OIDC_TOKEN_URI}
++      OIDC_USERINFO_URI: ${REDIS_OIDC_USERINFO_URI}
++      OIDC_USERNAME_CLAIM: ${REDIS_OIDC_USERNAME_CLAIM}
++      PGSSLMODE: ${REDIS_PGSSLMODE}
++      PORT: ${REDIS_PORT}
++      RATE_LIMITER_DURATION_WINDOW: ${REDIS_RATE_LIMITER_DURATION_WINDOW}
++      RATE_LIMITER_ENABLED: ${REDIS_RATE_LIMITER_ENABLED}
++      RATE_LIMITER_REQUESTS: ${REDIS_RATE_LIMITER_REQUESTS}
++      REDIS_COLLABORATION_URL: ${REDIS_REDIS_COLLABORATION_URL}
++      REDIS_URL: ${REDIS_REDIS_URL}
++      SECRET_KEY: ${REDIS_SECRET_KEY}
++      SENTRY_DSN: ${REDIS_SENTRY_DSN}
++      SENTRY_TUNNEL: ${REDIS_SENTRY_TUNNEL}
++      SLACK_APP_ID: ${REDIS_SLACK_APP_ID}
++      SLACK_CLIENT_ID: ${REDIS_SLACK_CLIENT_ID}
++      SLACK_CLIENT_SECRET: ${REDIS_SLACK_CLIENT_SECRET}
++      SLACK_MESSAGE_ACTIONS: ${REDIS_SLACK_MESSAGE_ACTIONS}
++      SLACK_VERIFICATION_TOKEN: ${REDIS_SLACK_VERIFICATION_TOKEN}
++      SMTP_FROM_EMAIL: ${REDIS_SMTP_FROM_EMAIL}
++      SMTP_HOST: ${REDIS_SMTP_HOST}
++      SMTP_PASSWORD: ${REDIS_SMTP_PASSWORD}
++      SMTP_PORT: ${REDIS_SMTP_PORT}
++      SMTP_REPLY_EMAIL: ${REDIS_SMTP_REPLY_EMAIL}
++      SMTP_USERNAME: ${REDIS_SMTP_USERNAME}
++      SSL_CERT: ${REDIS_SSL_CERT}
++      SSL_KEY: ${REDIS_SSL_KEY}
++      URL: ${REDIS_URL}
++      UTILS_SECRET: ${REDIS_UTILS_SECRET}
++      WEB_CONCURRENCY: ${REDIS_WEB_CONCURRENCY}
++    command:
++    - ${REDIS_CMD_0}
++    - ${REDIS_CMD_1}
++    healthcheck:
++      test:
++      - CMD
++      - ${REDIS_HC_0}
++      - ${REDIS_HC_1}
++      timeout: 30s
++      interval: 10s
++      retries: 3
++    volumes:
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/outline/data/redis.conf
++      target: /redis.conf
++      read_only: false
++      bind:
++        create_host_path: false
++    - type: bind
++      source: /mnt/media/alpine-app-copies-20261026/outline/data/redis-persistent
++      target: /data
++      bind:
++        create_host_path: false
++networks:
++  private: {}
++  proxy:
++    external: true
++    name: proxy

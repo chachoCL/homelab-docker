@@ -1,0 +1,58 @@
+A  00-proxies/traefik/dynamic/affine.yml
+ M 00-proxies/traefik/dynamic/arr-apps.yml
+A  00-proxies/traefik/dynamic/blinko.yml
+A  00-proxies/traefik/dynamic/cliproxyapi.yml
+A  00-proxies/traefik/dynamic/excalidraw.yml
+A  00-proxies/traefik/dynamic/kaneo.yml
+A  00-proxies/traefik/dynamic/litellm.yml
+A  00-proxies/traefik/dynamic/noco_db.yml
+A  00-proxies/traefik/dynamic/outline.yml
+ M 00-proxies/traefik/dynamic/sablier.yml
+ M 00-proxies/traefik/dynamic/syncyomi.yml
+A  01-traefik-apps/affine/.env.example
+A  01-traefik-apps/affine/.gitignore
+A  01-traefik-apps/affine/README.md
+A  01-traefik-apps/affine/compose.migration.yaml
+A  01-traefik-apps/blinko/.env.example
+A  01-traefik-apps/blinko/.gitignore
+A  01-traefik-apps/blinko/README.md
+A  01-traefik-apps/blinko/compose.migration.yaml
+A  01-traefik-apps/cliproxyapi/.env.example
+A  01-traefik-apps/cliproxyapi/.gitignore
+A  01-traefik-apps/cliproxyapi/README.md
+A  01-traefik-apps/cliproxyapi/compose.migration.yaml
+A  01-traefik-apps/excalidraw/.env.example
+A  01-traefik-apps/excalidraw/.gitignore
+A  01-traefik-apps/excalidraw/README.md
+A  01-traefik-apps/excalidraw/compose.migration.yaml
+ M 01-traefik-apps/ia-stack/compose.yaml
+A  01-traefik-apps/kaneo/.env.example
+A  01-traefik-apps/kaneo/.gitignore
+A  01-traefik-apps/kaneo/README.md
+A  01-traefik-apps/kaneo/compose.migration.yaml
+A  01-traefik-apps/litellm/.env.example
+A  01-traefik-apps/litellm/.gitignore
+A  01-traefik-apps/litellm/README.md
+A  01-traefik-apps/litellm/compose.migration.yaml
+ M 01-traefik-apps/n8n/compose.yaml
+A  01-traefik-apps/noco_db/.env.example
+A  01-traefik-apps/noco_db/.gitignore
+A  01-traefik-apps/noco_db/README.md
+A  01-traefik-apps/noco_db/compose.migration.yaml
+A  01-traefik-apps/outline/.env.example
+A  01-traefik-apps/outline/.gitignore
+A  01-traefik-apps/outline/README.md
+A  01-traefik-apps/outline/compose.migration.yaml
+ M 01-traefik-apps/pocket-id/compose.yaml
+ M 01-traefik-apps/sparkyFitness/compose.yml
+ M 01-traefik-apps/suwayomi/compose.yaml
+ D 01-traefik-apps/suwayomi/data/cache/kcef/CookieReadinessList/2024.11.26.0/LICENSE
+ D 01-traefik-apps/suwayomi/data/cache/kcef/OpenCookieDatabase/2024.10.17.0/LICENSE
+ D 01-traefik-apps/suwayomi/data/cache/kcef/ProbabilisticRevealTokenRegistry/2025.8.19.0/LICENSE
+ D 01-traefik-apps/suwayomi/data/cache/kcef/TrustTokenKeyCommitments/2026.3.23.1/LICENSE
+ D 01-traefik-apps/suwayomi/data/cache/kcef/WidevineCdm/4.10.2934.0/LICENSE
+ M 01-traefik-apps/vaultwarden/compose.yaml
+ M shared/newt-debian/compose.yaml
+?? 00-proxies/traefik/dynamic/hermes.yml
+?? 00-proxies/traefik/dynamic/multica.yml
+?? 00-proxies/traefik/dynamic/paperclip.yml
